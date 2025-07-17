@@ -24,7 +24,7 @@ export function FAQSection() {
             transition={{ delay: 0.1 }}
             className="text-lg text-gray-600 max-w-2xl mx-auto"
           >
-            Got questions? We've got answers!
+            Got questions? We`&apos;`ve got answers!
           </motion.p>
         </div>
 

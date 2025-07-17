@@ -128,7 +128,7 @@ export default function FAQ() {
       category: "Booking & Services",
       questions: [
         {
-          question: "How do I book a service with AutoCare?",
+          question: "How do I book a service with Tweak7?",
           answer:
             "You can book a service in multiple ways: 1) Through our website by clicking 'Book Now' and following the step-by-step process, 2) By calling our customer service at 1800-123-4567, 3) Through our mobile app. The booking process is simple and takes just a few minutes.",
         },
@@ -396,7 +396,7 @@ export default function FAQ() {
 
             <div className="mt-8 text-blue-100">
               <p className="mb-2">📞 1800-123-4567 (Toll Free)</p>
-              <p>✉️ support@autocare.com</p>
+              <p>✉️ support@Tweak7.com</p>
             </div>
           </motion.div>
         </div>

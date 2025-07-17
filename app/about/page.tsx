@@ -125,7 +125,7 @@ export default function About() {
               transition={{ duration: 0.6 }}
             >
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-                About <span className="text-blue-600">Twick7</span>
+                About <span className="text-blue-600">Tweak7</span>
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
                 We&apos;re revolutionizing car servicing with professional,
@@ -171,7 +171,7 @@ export default function About() {
                   Our Story
                 </h2>
                 <p className="text-lg text-gray-600 mb-6">
-                  Founded in 2018, Twick7 began with a simple mission: to make
+                  Founded in 2018, Tweak7 began with a simple mission: to make
                   car servicing transparent, convenient, and trustworthy. We
                   recognized that car owners needed a reliable partner who could
                   provide quality service without the traditional hassles of
@@ -196,7 +196,7 @@ export default function About() {
               >
                 <img
                   src="https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg?auto=compress&cs=tinysrgb&w=800"
-                  alt="Twick7 Workshop"
+                  alt="Tweak7 Workshop"
                   className="rounded-2xl shadow-2xl"
                 />
               </motion.div>
@@ -290,7 +290,7 @@ export default function About() {
               Meet Our Team
             </h2>
             <p className="text-xl text-gray-600">
-              The experts behind Twick7's success
+              The experts behind Tweak7's success
             </p>
           </div>
 
@@ -333,7 +333,7 @@ export default function About() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to Experience the Twick7 Difference?
+              Ready to Experience the Tweak7 Difference?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               Join thousands of satisfied customers who trust us with their

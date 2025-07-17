@@ -66,7 +66,7 @@ export default function Contact() {
     {
       icon: <Mail className="w-6 h-6 text-green-600" />,
       title: "Email",
-      details: ["support@autocare.com", "info@autocare.com"],
+      details: ["support@Tweak7.com", "info@Tweak7.com"],
       description: "We respond within 2 hours",
     },
     {
@@ -88,7 +88,7 @@ export default function Contact() {
       city: "Bangalore",
       address: "789 Tech Park, Koramangala, Bangalore - 560001",
       phone: "+91-98765-43212",
-      email: "bangalore@autocare.com",
+      email: "bangalore@Tweak7.com",
     },
   ];
 
@@ -160,7 +160,7 @@ export default function Contact() {
                 <CardHeader>
                   <CardTitle className="text-2xl">Send us a Message</CardTitle>
                   <CardDescription>
-                    Fill out the form below and we'll get back to you as soon as
+                    Fill out the form below and we`&apos;`ll get back to you as soon as
                     possible.
                   </CardDescription>
                 </CardHeader>
