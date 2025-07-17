@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useBookingStore } from '@/store/booking-store';
-import { states } from '@/lib/data';
-import { State } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Search, MapPin } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import { useBookingStore } from "@/store/booking-store";
+import { states } from "@/lib/data";
+import { State } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, MapPin } from "lucide-react";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 export function StateStep() {
   const { bookingData, setBookingData } = useBookingStore();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredStates, setFilteredStates] = useState(states);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export function StateStep() {
   };
 
   const handleUseCurrentLocation = () => {
-    if ('geolocation' in navigator) {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           // Mock location detection - in real app, use reverse geocoding
@@ -35,7 +36,7 @@ export function StateStep() {
           setBookingData({ state: mockState });
         },
         (error) => {
-          console.error('Error getting location:', error);
+          console.error("Error getting location:", error);
         }
       );
     }
@@ -44,8 +45,10 @@ export function StateStep() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Select Your State</h2>
-        <p className="text-muted-foreground">Choose your state to continue</p>
+        <h2 className="text-xl font-bold mb-2">Select Your State</h2>
+        <p className="text-sm text-muted-foreground">
+          Choose your state to continue
+        </p>
       </div>
 
       <div className="flex gap-4">
@@ -68,7 +71,7 @@ export function StateStep() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         {filteredStates.map((state) => (
           <motion.div
             key={state.id}
@@ -79,15 +82,17 @@ export function StateStep() {
             <div
               className={`border rounded-lg p-4 cursor-pointer transition-all duration-300 hover:shadow-lg ${
                 bookingData.state?.id === state.id
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-primary/50'
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
               }`}
               onClick={() => handleStateSelect(state)}
             >
-              <img
+              <Image
                 src={state.image}
                 alt={state.name}
-                className="w-full h-32 object-cover rounded-md mb-3"
+                className="w-full h-16 object-cover rounded-md mb-3"
+                width={240}
+                height={120}
               />
               <h3 className="font-semibold text-center">{state.name}</h3>
             </div>

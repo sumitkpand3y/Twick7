@@ -3,6 +3,7 @@
 import { useBookingStore } from '@/store/booking-store';
 import { CarModel } from '@/types';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export function ModelStep() {
   const { bookingData, setBookingData } = useBookingStore();
@@ -26,7 +27,7 @@ export function ModelStep() {
         <p className="text-muted-foreground">Choose your {bookingData.car.name} model</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
         {bookingData.car.models.map((model) => (
           <motion.div
             key={model.id}
@@ -42,10 +43,12 @@ export function ModelStep() {
               }`}
               onClick={() => handleModelSelect(model)}
             >
-              <img
+              <Image
                 src={model.image}
                 alt={model.name}
-                className="w-full h-40 object-cover rounded-md mb-4"
+                className="w-full h-16 object-cover rounded-md mb-4"
+                width={240}
+                height={120}
               />
               <h3 className="font-semibold text-center text-lg">{model.name}</h3>
             </div>

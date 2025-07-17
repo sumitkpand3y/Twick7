@@ -28,6 +28,8 @@ export default function RouteChangeLoader() {
           alt="Loading..."
           fill
           className="object-contain"
+          width={240}
+          height={120}
         />
         {/* Optional spinner ring inside logo */}
         {/* <div className="absolute inset-0 rounded-full border-[5px] border-t-blue-500 border-b-transparent border-l-transparent border-r-transparent animate-spin" /> */}
