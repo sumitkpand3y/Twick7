@@ -88,7 +88,35 @@ export function ServiceTracking({ booking, onWhatsAppUpdate }: ServiceTrackingPr
     }
   };
 
-  const currentStatusIndex = booking.statusHistory.length - 1;
+  // Safely handle undefined statusHistory
+  const statusHistory = booking.statusHistory || [];
+  const currentStatusIndex = statusHistory.length > 0 ? statusHistory.length - 1 : -1;
+  const currentStatus = currentStatusIndex >= 0 ? statusHistory[currentStatusIndex] : null;
+
+  // Ensure we're not rendering objects directly
+  const renderServiceDetails = () => {
+    if (!booking.services) return null;
+    
+    // Handle case where services is an array of strings
+    if (Array.isArray(booking.services)) {
+      return (
+        <div className="flex gap-1 mt-1">
+          {booking.services.map((service, idx) => (
+            <Badge key={idx} variant="outline" className="text-xs">
+              {typeof service === 'string' ? service : JSON.stringify(service)}
+            </Badge>
+          ))}
+        </div>
+      );
+    }
+    
+    // Handle case where services is an object
+    return (
+      <div className="text-sm text-gray-600 mt-1">
+        {JSON.stringify(booking.services)}
+      </div>
+    );
+  };
 
   return (
     <Card className="w-full">
@@ -102,11 +130,11 @@ export function ServiceTracking({ booking, onWhatsAppUpdate }: ServiceTrackingPr
             {getStatusText(booking.status)}
           </Badge>
         </div>
-        <div className="flex items-center gap-4 text-sm text-gray-600">
+        {/* <div className="flex items-center gap-4 text-sm text-gray-600">
           <span>📋 {booking.plateNumber}</span>
           <span>🔧 {booking.serviceType}</span>
-          <span>💰 ₹{booking.price.toLocaleString()}</span>
-        </div>
+          <span>💰 ₹{typeof booking.price === 'number' ? booking.price.toLocaleString() : '0'}</span>
+        </div> */}
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -122,7 +150,7 @@ export function ServiceTracking({ booking, onWhatsAppUpdate }: ServiceTrackingPr
             )}
           </div>
           <p className="text-blue-700">
-            {booking.statusHistory[currentStatusIndex]?.description}
+            {currentStatus?.description || 'No status information available'}
           </p>
           {booking.currentLocation && (
             <div className="flex items-center mt-2 text-sm text-blue-600">
@@ -132,39 +160,51 @@ export function ServiceTracking({ booking, onWhatsAppUpdate }: ServiceTrackingPr
           )}
         </div>
 
-        {/* Status Timeline */}
-        <div>
-          <h3 className="font-semibold mb-4">Service Timeline</h3>
-          <div className="space-y-4">
-            {booking.statusHistory.map((status, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-start gap-4"
-              >
-                <div className={`p-2 rounded-full ${index === currentStatusIndex ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'}`}>
-                  {getStatusIcon(status.status)}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">{getStatusText(status.status)}</h4>
-                    <span className="text-sm text-gray-500">
-                      {format(new Date(status.timestamp), 'MMM dd, HH:mm')}
-                    </span>
+        {/* Status Timeline - Only show if we have history */}
+        {statusHistory.length > 0 && (
+          <div>
+            <h3 className="font-semibold mb-4">Service Timeline</h3>
+            <div className="space-y-4">
+              {statusHistory.map((status: BookingStatusHistory, index: number) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-start gap-4"
+                >
+                  <div className={`p-2 rounded-full ${index === currentStatusIndex ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'}`}>
+                    {getStatusIcon(status.status)}
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">{status.description}</p>
-                  {status.estimatedTime && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Estimated: {format(new Date(status.estimatedTime), 'MMM dd, HH:mm')}
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">{getStatusText(status.status)}</h4>
+                      <span className="text-sm text-gray-500">
+                        {format(new Date(status.timestamp), 'MMM dd, HH:mm')}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {status.description || 'No description available'}
                     </p>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+                    {status.estimatedTime && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Estimated: {format(new Date(status.estimatedTime), 'MMM dd, HH:mm')}
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Service Details */}
+        {booking.services && (
+          <div className="pt-2">
+            <h3 className="font-semibold mb-2">Service Details</h3>
+            {renderServiceDetails()}
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-3 pt-4 border-t">

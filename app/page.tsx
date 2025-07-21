@@ -14,6 +14,7 @@ import { WhyChooseUs } from '@/components/why-choose-us';
 import { CouponsOffers } from '@/components/coupons-offers';
 import { CityAvailability } from '@/components/city-availability';
 import { FAQSection } from '@/components/faq-section';
+import { StatsCounter } from '@/components/StatsCounter';
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
       <Header />
       <main>
         <HeroCarousel />
+        <StatsCounter/>
         <PopularServices />
         <BrandsWeService />
         <FeaturedServices />

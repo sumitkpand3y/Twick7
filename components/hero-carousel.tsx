@@ -75,7 +75,7 @@ export function HeroCarousel() {
             <Button
               size="lg"
               onClick={() => setModalOpen(true)}
-              className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg font-semibold rounded-full transition-all duration-300 transform hover:scale-105"
+              className="bg-blue-600 hover:bg-primary/90 text-white px-8 py-3 text-lg font-semibold rounded-full transition-all duration-300 transform hover:scale-105"
             >
               {heroSlides[currentSlide].cta}
             </Button>

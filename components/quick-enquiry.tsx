@@ -83,12 +83,12 @@ export function QuickEnquiry({ isOpen, onClose }: QuickEnquiryProps) {
       // stickyHeader
     >
       <div className="p-4 sm:p-6">
-        <div className="text-center mb-6">
-          <Phone className="w-12 h-12 text-primary mx-auto mb-3" />
-          <p className="text-gray-600">
+        {/* <div className="text-center mb-6">
+          <Phone className="w-6 h-6 text-primary mx-auto mb-3" />
+          <p className="text-gray-600 text-sm">
             Get instant help for your car service needs
           </p>
-        </div>
+        </div> */}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>

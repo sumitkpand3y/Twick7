@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth-store';
 import { Header } from '@/components/header';
@@ -8,13 +8,16 @@ import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Car, Clock, CreditCard, MapPin, Phone, User, Bell, Download } from 'lucide-react';
+import { Calendar, Car, Clock, CreditCard, MapPin, Phone, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { ServiceTracking } from '@/components/service-tracking';
 import { motion } from 'framer-motion';
+import { Booking } from '@/types';
 
 export default function Dashboard() {
   const { user, bookings, notifications, sendWhatsAppNotification } = useAuthStore();
   const router = useRouter();
+  const [expandedBooking, setExpandedBooking] = useState<string | null>(null);
+  const [expandedActiveService, setExpandedActiveService] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -22,20 +25,62 @@ export default function Dashboard() {
     }
   }, [user, router]);
 
+  const toggleBooking = (bookingId: string) => {
+    setExpandedBooking(expandedBooking === bookingId ? null : bookingId);
+  };
+
+  const toggleActiveService = (bookingId: string) => {
+    setExpandedActiveService(expandedActiveService === bookingId ? null : bookingId);
+  };
+
   if (!user) {
     return null;
   }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'scheduled':
+        return <Clock className="w-5 h-5" />;
+      case 'pickup-scheduled':
+        return <Truck className="w-5 h-5" />;
+      case 'picked-up':
+        return <Truck className="w-5 h-5" />;
+      case 'in-service':
+        return <Wrench className="w-5 h-5" />;
+      case 'washing':
+        return <Droplets className="w-5 h-5" />;
+      case 'quality-check':
+        return <Shield className="w-5 h-5" />;
+      case 'ready-for-delivery':
+        return <CheckCircle className="w-5 h-5" />;
+      case 'delivered':
+        return <CheckCircle className="w-5 h-5" />;
+      case 'completed':
+        return <CheckCircle className="w-5 h-5" />;
+      default:
+        return <AlertCircle className="w-5 h-5" />;
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled':
         return 'bg-blue-100 text-blue-800';
-      case 'in-progress':
+      case 'pickup-scheduled':
         return 'bg-yellow-100 text-yellow-800';
+      case 'picked-up':
+        return 'bg-orange-100 text-orange-800';
+      case 'in-service':
+        return 'bg-purple-100 text-purple-800';
+      case 'washing':
+        return 'bg-cyan-100 text-cyan-800';
+      case 'quality-check':
+        return 'bg-indigo-100 text-indigo-800';
+      case 'ready-for-delivery':
+        return 'bg-green-100 text-green-800';
+      case 'delivered':
       case 'completed':
         return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -44,13 +89,23 @@ export default function Dashboard() {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'scheduled':
-        return 'Scheduled';
-      case 'in-progress':
-        return 'In Progress';
+        return 'Service Scheduled';
+      case 'pickup-scheduled':
+        return 'Pickup Scheduled';
+      case 'picked-up':
+        return 'Vehicle Picked Up';
+      case 'in-service':
+        return 'Service in Progress';
+      case 'washing':
+        return 'Washing & Detailing';
+      case 'quality-check':
+        return 'Quality Check';
+      case 'ready-for-delivery':
+        return 'Ready for Delivery';
+      case 'delivered':
+        return 'Vehicle Delivered';
       case 'completed':
-        return 'Completed';
-      case 'cancelled':
-        return 'Cancelled';
+        return 'Service Completed';
       default:
         return status;
     }
@@ -65,33 +120,36 @@ export default function Dashboard() {
     },
     {
       title: 'Completed Services',
-      value: bookings.filter(b => b.status === 'completed').length,
+      value: bookings.filter((b: Booking) => b.status === 'completed').length,
       icon: Car,
       color: 'text-green-600',
     },
     {
       title: 'Upcoming Services',
-      value: bookings.filter(b => !['completed', 'cancelled'].includes(b.status)).length,
+      value: bookings.filter((b: Booking) => !['completed', 'cancelled'].includes(b.status)).length,
       icon: Clock,
       color: 'text-yellow-600',
     },
     {
       title: 'Total Spent',
-      value: `₹${bookings.reduce((sum, b) => sum + b.price, 0).toLocaleString()}`,
+      value: `₹${bookings.reduce((sum: number, b: Booking) => sum + b.price, 0).toLocaleString()}`,
       icon: CreditCard,
       color: 'text-primary',
     },
   ];
 
-  const handleWhatsAppUpdate = (booking: any) => {
-    const message = `Hi! Here's an update on your ${booking.carModel} (${booking.plateNumber}) service: ${getStatusText(booking.status)}. Current status: ${booking.statusHistory[booking.statusHistory.length - 1]?.description}`;
+  const handleWhatsAppUpdate = (booking: Booking) => {
+    const message = `Hi! Here's an update on your ${booking.carModel} (${booking.plateNumber}) service: ${getStatusText(booking.status)}. Current status: ${booking?.statusHistory[booking.statusHistory?.length - 1]?.description}`;
     sendWhatsAppNotification(message, user?.mobile || '');
   };
+
+  const activeServices = bookings.filter((b: Booking) => !['completed', 'cancelled'].includes(b.status));
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="pt-16">
-        <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-16">
+        <div className="bg-gradient-to-r from-gray-900 to-gray-900/80 text-white py-16">
           <div className="container mx-auto px-4">
             <div className="flex items-center space-x-4">
               <div className="bg-white/20 p-3 rounded-full">
@@ -120,22 +178,22 @@ export default function Dashboard() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">{stat.title}</p>
-                      <p className="text-2xl font-bold">{stat.value}</p>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">{stat.title}</p>
+                        <p className="text-2xl font-bold">{stat.value}</p>
+                      </div>
+                      <stat.icon className={`h-8 w-8 ${stat.color}`} />
                     </div>
-                    <stat.icon className={`h-8 w-8 ${stat.color}`} />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </motion.div>
 
           {/* Active Service Tracking */}
-          {bookings.filter(b => !['completed', 'cancelled'].includes(b.status)).length > 0 && (
+          {activeServices.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -143,19 +201,59 @@ export default function Dashboard() {
               className="mb-12"
             >
               <h2 className="text-2xl font-bold mb-6">🚗 Active Services</h2>
-              <div className="space-y-6">
-                {bookings
-                  .filter(b => !['completed', 'cancelled'].includes(b.status))
-                  .map((booking) => (
-                    <ServiceTracking
-                      key={booking.id}
-                      booking={booking}
-                      onWhatsAppUpdate={() => handleWhatsAppUpdate(booking)}
-                    />
-                  ))}
+              <div className="space-y-4">
+                {activeServices.map((booking: Booking) => (
+                  <Card key={booking.id} className="overflow-hidden">
+                    <button
+                      className="w-full text-left"
+                      onClick={() => toggleActiveService(booking.id)}
+                    >
+                      <CardHeader className="flex flex-row items-center justify-between p-4 hover:bg-gray-50">
+                        <div className="flex items-center gap-4">
+                          <div className={`p-2 rounded-full ${getStatusColor(booking.status)}`}>
+                            <Car className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">{booking.serviceType}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {booking.carModel} • {booking.plateNumber} • <span>💰 ₹{typeof booking.price === 'number' ? booking.price.toLocaleString() : '0'}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <Badge className={getStatusColor(booking.status)}>
+                            {getStatusText(booking.status)}
+                          </Badge>
+                          {expandedActiveService === booking.id ? (
+                            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                          )}
+                        </div>
+                      </CardHeader>
+                    </button>
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{
+                        opacity: expandedActiveService === booking.id ? 1 : 0,
+                        height: expandedActiveService === booking.id ? 'auto' : 0
+                      }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <CardContent className="p-4 pt-0">
+                        <ServiceTracking
+                          booking={booking}
+                          onWhatsAppUpdate={() => handleWhatsAppUpdate(booking)}
+                        />
+                      </CardContent>
+                    </motion.div>
+                  </Card>
+                ))}
               </div>
             </motion.div>
           )}
+
           {/* Profile Information */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -223,71 +321,107 @@ export default function Dashboard() {
             transition={{ delay: 0.6 }}
           >
             <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Recent Bookings
-                <Badge variant="secondary">{bookings.length} total</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {bookings.length === 0 ? (
-                <div className="text-center py-8">
-                  <Car className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground">No bookings yet</p>
-                  <Button className="mt-4">Book Your First Service</Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {bookings.map((booking) => (
-                    <div
-                      key={booking.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="bg-primary/10 p-3 rounded-full">
-                          <Car className="h-6 w-6 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">{booking.serviceType}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {booking.carModel} • {booking.plateNumber}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {booking.date} at {booking.time}
-                          </p>
-                          {booking.services && booking.services.length > 1 && (
-                            <div className="flex gap-1 mt-1">
-                              {booking.services.map((service, idx) => (
-                                <Badge key={idx} variant="outline" className="text-xs">
-                                  {service}
-                                </Badge>
-                              ))}
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Recent Bookings
+                  <Badge variant="secondary">{bookings.length} total</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {bookings.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Car className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No bookings yet</p>
+                    <Button className="mt-4">Book Your First Service</Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {bookings.map((booking: Booking) => (
+                      <Card key={booking.id} className="overflow-hidden">
+                        <button
+                          className="w-full text-left"
+                          onClick={() => toggleBooking(booking.id)}
+                        >
+                          <CardHeader className="flex flex-row items-center justify-between p-4 hover:bg-gray-50">
+                            <div className="flex items-center gap-4">
+                              <div className={`p-2 rounded-full ${getStatusColor(booking.status)}`}>
+                                <Car className="h-5 w-5" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">{booking.serviceType}</h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {booking.carModel} • {booking.plateNumber}
+                                </p>
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge className={getStatusColor(booking.status)}>
-                          {getStatusText(booking.status)}
-                        </Badge>
-                        <p className="text-sm font-semibold mt-1">₹{booking.price}</p>
-                        {!['completed', 'cancelled'].includes(booking.status) && (
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="mt-2"
-                            onClick={() => handleWhatsAppUpdate(booking)}
-                          >
-                            Track Service
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                            <div className="flex items-center gap-4">
+                              <Badge className={getStatusColor(booking.status)}>
+                                {getStatusText(booking.status)}
+                              </Badge>
+                              {expandedBooking === booking.id ? (
+                                <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                              ) : (
+                                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                              )}
+                            </div>
+                          </CardHeader>
+                        </button>
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{
+                            opacity: expandedBooking === booking.id ? 1 : 0,
+                            height: expandedBooking === booking.id ? 'auto' : 0
+                          }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <CardContent className="p-4 pt-0 space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-sm text-muted-foreground">Date</p>
+                                <p>{booking.date} at {booking.time}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Price</p>
+                                <p className="font-semibold">₹{booking.price}</p>
+                              </div>
+                            </div>
+                            {booking.services && (
+                              <div>
+                                <p className="text-sm text-muted-foreground">Services</p>
+                                <div className="flex flex-wrap gap-2 mt-1">
+                                  {Array.isArray(booking.services) ? (
+                                    booking.services.map((service: string, idx: number) => (
+                                      <Badge key={idx} variant="outline" className="text-xs">
+                                        {typeof service === 'string' ? service : JSON.stringify(service)}
+                                      </Badge>
+                                    ))
+                                  ) : (
+                                    <Badge variant="outline" className="text-xs">
+                                      {JSON.stringify(booking.services)}
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                            {!['completed', 'cancelled'].includes(booking.status) && (
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="w-full"
+                                onClick={() => handleWhatsAppUpdate(booking)}
+                              >
+                                Track Service
+                              </Button>
+                            )}
+                          </CardContent>
+                        </motion.div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
       </main>

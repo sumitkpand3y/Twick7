@@ -1,7 +1,14 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import { BookingData, State, Car, CarModel, FuelType, ServiceType } from '@/types';
+import { create } from "zustand";
+import {
+  BookingData,
+  State,
+  Car,
+  CarModel,
+  FuelType,
+  ServiceType,
+} from "@/types";
 
 interface BookingStore {
   bookingData: BookingData;
@@ -13,6 +20,7 @@ interface BookingStore {
   resetBooking: () => void;
   goToNextStep: () => void;
   goToPrevStep: () => void;
+  toggleServiceType: (serviceType: ServiceType) => void; // Add this new method
 }
 
 const initialBookingData: BookingData = {
@@ -21,19 +29,19 @@ const initialBookingData: BookingData = {
   model: null,
   fuelType: null,
   serviceType: null,
-  complaint: '',
-  serviceDate: '',
-  plateNumber: '',
-  yearOfManufacturing: '',
-  kmReading: '',
-  specificIssues: '',
-  name: '',
-  mobile: '',
-  email: '',
-  flatHouseNo: '',
-  areaStreet: '',
-  landmark: '',
-  townCity: '',
+  complaint: "",
+  serviceDate: "",
+  plateNumber: "",
+  yearOfManufacturing: "",
+  kmReading: "",
+  specificIssues: "",
+  name: "",
+  mobile: "",
+  email: "",
+  flatHouseNo: "",
+  areaStreet: "",
+  landmark: "",
+  townCity: "",
   useCurrentLocation: false,
 };
 
@@ -45,6 +53,25 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
     set((state) => ({
       bookingData: { ...state.bookingData, ...data },
     })),
+  toggleServiceType: (serviceType) => {
+    set((state) => {
+      const currentServices = Array.isArray(state.bookingData.serviceType)
+        ? state.bookingData.serviceType
+        : [];
+
+      const isSelected = currentServices.some((s) => s.id === serviceType.id);
+      const updatedServices = isSelected
+        ? currentServices.filter((s) => s.id !== serviceType.id)
+        : [...currentServices, serviceType];
+
+      return {
+        bookingData: {
+          ...state.bookingData,
+          serviceType: updatedServices.length > 0 ? updatedServices : null,
+        },
+      };
+    });
+  },
   setCurrentStep: (step) => set({ currentStep: step }),
   setModalOpen: (open) => set({ isModalOpen: open }),
   resetBooking: () =>

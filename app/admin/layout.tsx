@@ -43,7 +43,8 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [adminUser, setAdminUser] = useState<any>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -59,12 +60,24 @@ export default function AdminLayout({
       if (authData.isAuthenticated) {
         setIsAuthenticated(true);
         setAdminUser(authData.user);
+        
+        // If on login page, redirect to dashboard
+        if (pathname === '/admin/login') {
+          router.push('/admin/dashboard');
+        }
       } else {
-        router.push('/admin/login');
+        // If not authenticated, redirect to login
+        if (pathname !== '/admin/login') {
+          router.push('/admin/login');
+        }
       }
     } else {
-      router.push('/admin/login');
+      // If no auth data, redirect to login
+      if (pathname !== '/admin/login') {
+        router.push('/admin/login');
+      }
     }
+    setIsLoading(false);
 
     // Check screen size
     const checkIfMobile = () => {
@@ -82,23 +95,26 @@ export default function AdminLayout({
 
     // Cleanup
     return () => window.removeEventListener('resize', checkIfMobile);
-  }, [router]);
+  }, [router, pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuth');
-    toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out",
-    });
-    router.push('/admin/login');
-  };
+  localStorage.removeItem('adminAuth');
+  setIsAuthenticated(false); // Explicitly set authentication state to false
+  setAdminUser(null); // Clear user data
+  toast({
+    title: "Logged Out",
+    description: "You have been successfully logged out",
+  });
+  router.push('/admin/login');
+  router.refresh(); // Force a refresh to ensure all state is cleared
+};
 
   const getPageTitle = () => {
     const currentItem = sidebarItems.find(item => pathname.startsWith(item.href));
     return currentItem?.label || 'Dashboard';
   };
 
-  if (!isAuthenticated) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
@@ -106,6 +122,22 @@ export default function AdminLayout({
     );
   }
 
+  // If not authenticated and not on login page, show nothing (will redirect)
+  if (!isAuthenticated && pathname !== '/admin/login') {
+    return null;
+  }
+
+  // If on login page and authenticated, show nothing (will redirect to dashboard)
+  if (isAuthenticated && pathname === '/admin/login') {
+    return null;
+  }
+
+  // If on login page and not authenticated, show login page
+  if (!isAuthenticated && pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
+  // Otherwise, show the admin layout
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
       {/* Mobile Sidebar Overlay */}

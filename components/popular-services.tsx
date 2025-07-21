@@ -4,18 +4,21 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ServiceType } from '@/types';
 import { popularServices } from '@/lib/data';
 import { useBookingStore } from '@/store/booking-store';
 import { useAuthStore } from '@/store/auth-store';
 import { Clock, Star, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export function PopularServices() {
-  const { setModalOpen } = useBookingStore();
+  const { setModalOpen , toggleServiceType} = useBookingStore();
   const { user, setAuthModalOpen } = useAuthStore();
 
-  const handleBookNow = (serviceId: string) => {
+  const handleBookNow = (service: ServiceType) => {
     if (user) {
+      toggleServiceType(service)
       setModalOpen(true);
     } else {
       setAuthModalOpen(true);
@@ -97,7 +100,7 @@ export function PopularServices() {
                   </div>
 
                   <Button 
-                    onClick={() => handleBookNow(service.id)}
+                    onClick={() => handleBookNow(service)}
                     className="w-full group-hover:bg-primary group-hover:text-white transition-all duration-300"
                     variant="outline"
                   >
@@ -111,13 +114,12 @@ export function PopularServices() {
         </div>
 
         <div className="text-center mt-12">
-          <Button 
-            size="lg" 
-            onClick={() => user ? setModalOpen(true) : setAuthModalOpen(true)}
+          <Link 
+          href={'/services'}
             className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-semibold"
           >
             View All Services
-          </Button>
+          </Link>
         </div>
       </div>
     </section>

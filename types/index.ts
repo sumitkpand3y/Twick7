@@ -30,6 +30,10 @@ export interface ServiceType {
   description: string;
   price: number;
   image: string;
+  originalPrice:number;
+  icon:string;
+  popular:boolean;
+  estimatedTime:string;
 }
 
 export interface BookingData {

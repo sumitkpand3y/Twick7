@@ -2,7 +2,13 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import {
   Users,
   Award,
@@ -13,6 +19,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function About() {
   const features = [
@@ -43,7 +50,7 @@ export default function About() {
   ];
   const stats = [
     {
-      number: "50,000+",
+      number: "1025+",
       label: "Happy Customers",
       icon: <Users className="w-8 h-8 text-blue-600" />,
     },
@@ -125,7 +132,7 @@ export default function About() {
               transition={{ duration: 0.6 }}
             >
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-                About <span className="text-blue-600">Tweak7</span>
+                About Tweak<span className="text-blue-600">7</span>
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
                 We&apos;re revolutionizing car servicing with professional,
@@ -194,160 +201,122 @@ export default function About() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <img
+                <Image
                   src="https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Tweak7 Workshop"
+                  width={540}
+                  height={120}
                   className="rounded-2xl shadow-2xl"
                 />
               </motion.div>
             </div>
           </div>
         </section>
-
-        {/* <div className="container mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            <div>
-              <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-              <p className="text-lg text-muted-foreground mb-4">
-                Founded in 2015, Tweak7 has been revolutionizing the car service
-                industry with our commitment to transparency, quality, and
-                customer satisfaction.
-              </p>
-              <p className="text-lg text-muted-foreground mb-4">
-                We believe that car maintenance should be convenient,
-                affordable, and trustworthy. That's why we've built a platform
-                that connects car owners with skilled mechanics who deliver
-                professional service right to your doorstep.
-              </p>
-              <p className="text-lg text-muted-foreground">
-                With over 50,000 satisfied customers and counting, we continue
-                to set new standards in automotive care across India.
+        {/* Values Section */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Our Values
+              </h2>
+              <p className="text-xl text-gray-600">
+                The principles that guide everything we do
               </p>
             </div>
-            <div>
-              <img
-                src="https://images.pexels.com/photos/279949/pexels-photo-279949.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt="Our team"
-                className="rounded-lg shadow-lg"
-              />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {values.map((value, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="text-center h-full hover:shadow-lg transition-shadow duration-300">
+                    <CardHeader>
+                      <div className="flex justify-center mb-4">
+                        {value.icon}
+                      </div>
+                      <CardTitle className="text-xl">{value.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600">{value.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="text-center">
-                <CardHeader>
-                  <feature.icon className="h-12 w-12 mx-auto text-primary mb-4" />
-                  <CardTitle>{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div> */}
-         {/* Values Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Our Values
-            </h2>
-            <p className="text-xl text-gray-600">
-              The principles that guide everything we do
-            </p>
-          </div>
+        {/* Team Section */}
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Meet Our Team
+              </h2>
+              <p className="text-xl text-gray-600">
+                The experts behind Tweak7's success
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card className="text-center h-full hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader>
-                    <div className="flex justify-center mb-4">{value.icon}</div>
-                    <CardTitle className="text-xl">{value.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">{value.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {team.map((member, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="text-center hover:shadow-lg transition-shadow duration-300">
+                    <CardHeader>
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        width={240}
+                        height={120}
+                        className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                      />
+                      <CardTitle className="text-xl">{member.name}</CardTitle>
+                      <CardDescription className="text-blue-600 font-medium">
+                        {member.role}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600">{member.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Team Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Meet Our Team
-            </h2>
-            <p className="text-xl text-gray-600">
-              The experts behind Tweak7's success
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
-                <Card className="text-center hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader>
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
-                    />
-                    <CardTitle className="text-xl">{member.name}</CardTitle>
-                    <CardDescription className="text-blue-600 font-medium">
-                      {member.role}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">{member.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to Experience the Tweak7 Difference?
-            </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who trust us with their
-              vehicle care.
-            </p>
-            <Button
-              size="lg"
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg"
+        {/* CTA Section */}
+        <section className="py-20 bg-blue-600">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
             >
-              Book Your Service Now
-            </Button>
-          </motion.div>
-        </div>
-      </section>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                Ready to Experience the Tweak7 Difference?
+              </h2>
+              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                Join thousands of satisfied customers who trust us with their
+                vehicle care.
+              </p>
+              <Button
+                size="lg"
+                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg"
+              >
+                Book Your Service Now
+              </Button>
+            </motion.div>
+          </div>
+        </section>
       </main>
       <Footer />
     </div>

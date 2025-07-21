@@ -37,14 +37,14 @@ export const bookingValidationSchema = {
     }),
   }),
   
-  service: z.object({
-    serviceType: z.object({
-      id: z.string(),
-      title: z.string(),
-    }).nullable().refine((val) => val !== null, {
-      message: "Please select a service type",
-    }),
-  }),
+  // service: z.object({
+  //   serviceType: z.object({
+  //     id: z.string(),
+  //     title: z.string(),
+  //   }).nullable().refine((val) => val !== null, {
+  //     message: "Please select a service type",
+  //   }),
+  // }),
   
   complaint: z.object({
     complaint: z.string().min(10, "Please describe your complaint (minimum 10 characters)"),
@@ -62,6 +62,19 @@ export const bookingValidationSchema = {
     areaStreet: z.string().min(1, "Please enter area/street"),
     townCity: z.string().min(1, "Please enter town/city"),
     landmark: z.string().optional(),
+  }),
+  service: z.object({
+    serviceType: z
+      .array(
+        z.object({
+          id: z.string(),
+          title: z.string(),
+          description: z.string(),
+          price: z.number(),
+          image: z.string(),
+        })
+      )
+      .min(1, "Please select at least one service"),
   }),
 };
 

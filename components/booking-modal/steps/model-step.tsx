@@ -1,12 +1,27 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useBookingStore } from '@/store/booking-store';
 import { CarModel } from '@/types';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 
 export function ModelStep() {
   const { bookingData, setBookingData } = useBookingStore();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredModels, setFilteredModels] = useState<CarModel[]>([]);
+
+  useEffect(() => {
+    if (bookingData.car) {
+      setFilteredModels(
+        bookingData.car.models.filter((model) =>
+          model.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+  }, [searchTerm, bookingData.car]);
 
   const handleModelSelect = (model: CarModel) => {
     setBookingData({ model });
@@ -27,8 +42,18 @@ export function ModelStep() {
         <p className="text-muted-foreground">Choose your {bookingData.car.name} model</p>
       </div>
 
+      <div className="relative">
+        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder={`Search ${bookingData.car.name} models...`}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        {bookingData.car.models.map((model) => (
+        {filteredModels.map((model) => (
           <motion.div
             key={model.id}
             initial={{ opacity: 0, y: 20 }}

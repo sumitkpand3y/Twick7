@@ -17,6 +17,9 @@ export function ComplaintStep() {
 
   const handleInputChange = (field: string, value: string) => {
     setBookingData({ [field]: value });
+
+    console.log("bookingData", bookingData);
+    
   };
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
