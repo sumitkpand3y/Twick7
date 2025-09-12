@@ -24,7 +24,7 @@ interface BookingStore {
 }
 
 const initialBookingData: BookingData = {
-  state: null,
+  state: 'Bangaluru',
   car: null,
   model: null,
   fuelType: null,

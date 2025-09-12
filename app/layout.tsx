@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import RouteChangeLoader from '@/components/RouteChangeLoader';
+import { WhatsAppFloat } from '@/components/whatsapp-float';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -33,6 +34,7 @@ export default function RootLayout({
               },
             }}
           />
+          <WhatsAppFloat />
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>

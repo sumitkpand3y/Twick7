@@ -17,12 +17,12 @@ export function PopularServices() {
   const { user, setAuthModalOpen } = useAuthStore();
 
   const handleBookNow = (service: ServiceType) => {
-    if (user) {
+    // if (user) {
       toggleServiceType(service)
       setModalOpen(true);
-    } else {
-      setAuthModalOpen(true);
-    }
+    // } else {
+    //   setAuthModalOpen(true);
+    // }
   };
 
   return (

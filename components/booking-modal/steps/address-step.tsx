@@ -16,20 +16,46 @@ export function AddressStep() {
   const handleUseCurrentLocation = () => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setBookingData({ useCurrentLocation: true });
-          // Mock address filling
-          setBookingData({
-            flatHouseNo: '123',
-            areaStreet: 'MG Road',
-            landmark: 'Near Metro Station',
-            townCity: 'Mumbai',
-          });
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            );
+
+            const data = await response.json();
+            console.log('Address data:', data);
+            
+            const address = data.address || {};
+
+            console.log('Address from coordinates:', address);
+            
+
+            setBookingData({
+              ...bookingData,
+              useCurrentLocation: true,
+              flatHouseNo: address.house_number || address.house || '',
+              areaStreet: [address.road, address.suburb, address.neighbourhood]
+                .filter(Boolean)
+                .join(', '),
+              landmark: address.landmark || address.neighbourhood || '',
+              townCity: address.city || address.town || address.village || address.county || '',
+              state: address.state || '',
+              country: address.country || '',
+              pincode: address.postcode || '',
+            });
+
+          } catch (error) {
+            console.error('Failed to fetch address from coordinates:', error);
+          }
         },
         (error) => {
           console.error('Error getting location:', error);
         }
       );
+    } else {
+      console.warn('Geolocation is not available in this browser');
     }
   };
 
@@ -58,7 +84,7 @@ export function AddressStep() {
             <Input
               id="name"
               placeholder="Enter your full name"
-              value={bookingData.name}
+              value={bookingData.name || ''}
               onChange={(e) => handleInputChange('name', e.target.value)}
               className="mt-1"
             />
@@ -69,7 +95,7 @@ export function AddressStep() {
             <Input
               id="mobile"
               placeholder="Enter your mobile number"
-              value={bookingData.mobile}
+              value={bookingData.mobile || ''}
               onChange={(e) => handleInputChange('mobile', e.target.value)}
               className="mt-1"
             />
@@ -81,7 +107,7 @@ export function AddressStep() {
               id="email"
               type="email"
               placeholder="Enter your email"
-              value={bookingData.email}
+              value={bookingData.email || ''}
               onChange={(e) => handleInputChange('email', e.target.value)}
               className="mt-1"
             />
@@ -92,7 +118,7 @@ export function AddressStep() {
             <Input
               id="flatHouseNo"
               placeholder="Enter flat/house number"
-              value={bookingData.flatHouseNo}
+              value={bookingData.flatHouseNo || ''}
               onChange={(e) => handleInputChange('flatHouseNo', e.target.value)}
               className="mt-1"
             />
@@ -105,7 +131,7 @@ export function AddressStep() {
             <Input
               id="areaStreet"
               placeholder="Enter area/street"
-              value={bookingData.areaStreet}
+              value={bookingData.areaStreet || ''}
               onChange={(e) => handleInputChange('areaStreet', e.target.value)}
               className="mt-1"
             />
@@ -116,7 +142,7 @@ export function AddressStep() {
             <Input
               id="landmark"
               placeholder="Enter landmark"
-              value={bookingData.landmark}
+              value={bookingData.landmark || ''}
               onChange={(e) => handleInputChange('landmark', e.target.value)}
               className="mt-1"
             />
@@ -127,8 +153,19 @@ export function AddressStep() {
             <Input
               id="townCity"
               placeholder="Enter town/city"
-              value={bookingData.townCity}
+              value={bookingData.townCity || ''}
               onChange={(e) => handleInputChange('townCity', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="pincode">Pincode *</Label>
+            <Input
+              id="pincode"
+              placeholder="Enter pincode"
+              value={bookingData.pincode || ''}
+              onChange={(e) => handleInputChange('pincode', e.target.value)}
               className="mt-1"
             />
           </div>

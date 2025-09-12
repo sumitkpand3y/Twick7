@@ -66,7 +66,6 @@ export function ConfirmStep() {
       setTimeout(() => {
         setModalOpen(false);
         resetBooking();
-        setIsConfirmed(false);
       }, 3000);
     }
   };
@@ -112,10 +111,10 @@ export function ConfirmStep() {
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 font-medium mb-1">What's next?</p>
+            <p className="text-blue-800 font-medium mb-1">What&apos;s next?</p>
             <p className="text-sm text-blue-600">
               Our service advisor will contact you shortly to confirm the details.
-              You'll receive an SMS with service preparation instructions.
+              You&apos;ll receive an SMS with service preparation instructions.
             </p>
           </div>
         </div>
@@ -269,18 +268,16 @@ export function ConfirmStep() {
       </div>
 
       <div className="flex flex-col items-center pt-6 gap-3">
-        <Button
+        {/* <Button
           size="lg"
           onClick={handleConfirmBooking}
           className="px-8 py-3 text-lg w-full max-w-md"
-          disabled={!user || serviceTypes.length === 0}
+          disabled={serviceTypes.length === 0}
         >
-          {!user 
-            ? 'Please Login to Confirm' 
-            : serviceTypes.length === 0
+          {serviceTypes.length === 0
               ? 'Please Select at Least One Service'
               : 'Confirm Booking'}
-        </Button>
+        </Button> */}
         
         <p className="text-sm text-muted-foreground text-center max-w-md">
           By confirming, you agree to our terms of service. A service advisor will contact you shortly.
@@ -302,5 +299,5 @@ function DetailRow({ icon, label, value }: { icon: React.ReactNode, label: strin
         <p className="font-medium">{value || '-'}</p>
       </div>
     </div>
-  );
+  ); 
 }

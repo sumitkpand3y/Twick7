@@ -15,6 +15,7 @@ import { CouponsOffers } from '@/components/coupons-offers';
 import { CityAvailability } from '@/components/city-availability';
 import { FAQSection } from '@/components/faq-section';
 import { StatsCounter } from '@/components/StatsCounter';
+import HowWeWorkTree from '@/components/how-we-work';
 
 export default function Home() {
   return (
@@ -25,7 +26,8 @@ export default function Home() {
         <StatsCounter/>
         <PopularServices />
         <BrandsWeService />
-        <FeaturedServices />
+        {/* <FeaturedServices /> */}
+        <HowWeWorkTree/>
         <WhyChooseUs />
         <CouponsOffers />
         <Testimonials />

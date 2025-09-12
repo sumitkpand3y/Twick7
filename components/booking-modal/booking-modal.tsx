@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
@@ -12,6 +12,8 @@ import {
   bookingValidationSchema,
   BookingStepValidation,
 } from "@/lib/validation";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import { StateStep } from "./steps/state-step";
 import { CarStep } from "./steps/car-step";
 import { ModelStep } from "./steps/model-step";
@@ -25,7 +27,6 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 const steps = [
-  "State",
   "Car",
   "Model",
   "Fuel Type",
@@ -36,7 +37,6 @@ const steps = [
 ];
 
 const stepComponents = [
-  StateStep,
   CarStep,
   ModelStep,
   FuelStep,
@@ -47,7 +47,6 @@ const stepComponents = [
 ];
 
 const stepValidationKeys: BookingStepValidation[] = [
-  "state",
   "car",
   "model",
   "fuel",
@@ -69,18 +68,11 @@ export function BookingModal() {
   const [validationError, setValidationError] = useState<string>("");
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingId, setBookingId] = useState("");
-  const [isBookingSuccessful, setIsBookingSuccessful] = useState(false);
 
   const handleClose = () => {
     setModalOpen(false);
     resetBooking();
     setValidationError("");
-    
-    // Only show confirmation if booking was successful
-    if (isBookingSuccessful) {
-      setShowConfirmation(true);
-      setIsBookingSuccessful(false);
-    }
   };
 
   const validateCurrentStep = (): boolean => {
@@ -162,7 +154,6 @@ export function BookingModal() {
       // Save booking data
       const bookingPayload = {
         id: newBookingId,
-        userId: user.id,
         ...bookingData,
         serviceType: Array.isArray(bookingData.serviceType)
           ? bookingData.serviceType
@@ -184,10 +175,10 @@ export function BookingModal() {
       const message = `Hi ${bookingData.name}! Your car service booking has been confirmed. Booking ID: ${newBookingId}. We will contact you soon for pickup scheduling.`;
       sendWhatsAppNotification(message, bookingData.mobile);
 
-      // Mark booking as successful and close modal
-      setIsBookingSuccessful(true);
-      setModalOpen(false);
-      
+      // Close modal and show confirmation
+      setShowConfirmation(true);
+      // setModalOpen(false);
+
       toast.success("Booking confirmed successfully!");
     } catch (error: any) {
       const errorMessage =
@@ -205,32 +196,309 @@ export function BookingModal() {
     }
   };
 
-  const handleDownloadInvoice = () => {
-    const bookingDetails = {
-      bookingId,
-      customerName: bookingData.name,
-      mobile: bookingData.mobile,
-      email: bookingData.email,
-      carDetails: `${bookingData.car?.name} ${bookingData.model?.name}`,
-      plateNumber: bookingData.plateNumber,
-      services: Array.isArray(bookingData.serviceType)
-        ? bookingData.serviceType.map(s => s.title).join(', ')
-        : bookingData.serviceType?.title || '',
-      totalPrice: Array.isArray(bookingData.serviceType)
-        ? bookingData.serviceType.reduce((sum, s) => sum + s.price, 0)
-        : bookingData.serviceType?.price || 0,
-      serviceDate: bookingData.serviceDate,
-      address: `${bookingData.flatHouseNo}, ${bookingData.areaStreet}, ${bookingData.townCity}`,
-    };
+  const handleDownloadInvoice = async () => {
+    // Create a temporary div to hold our invoice HTML
+    const invoiceElement = document.createElement("div");
+    invoiceElement.style.position = "absolute";
+    invoiceElement.style.left = "-9999px";
+    invoiceElement.style.width = "800px";
+    invoiceElement.style.fontFamily =
+      "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    invoiceElement.style.backgroundColor = "#ffffff";
 
-    const dataStr = JSON.stringify(bookingDetails, null, 2);
-    const dataBlob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `booking-${bookingId}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    // Format services and calculate total
+    const services = Array.isArray(bookingData.serviceType)
+      ? bookingData.serviceType
+      : bookingData.serviceType
+      ? [bookingData.serviceType]
+      : [];
+
+    const totalPrice = services.reduce((sum, s) => sum + s.price, 0);
+
+    // Format the current date
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // Create the professional single-page invoice HTML
+    invoiceElement.innerHTML = `
+    <div style="max-width: 800px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+      
+      <!-- Professional Header -->
+      <div style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 25px 30px; position: relative;">
+        <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -20px; left: -20px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+        
+        <div style="position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center;">
+          <!-- Left: Company Info -->
+          <div style="display: flex; align-items: center;">
+            <img src="https://tweak7.co.in/mainwebsit/image/logo/logo.png" alt="Twick7 Logo" style="height: 50px; margin-right: 15px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));"/>
+            <div>
+              <h1 style="margin: 0; font-size: 28px; color: white; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase;">TWICK7</h1>
+              <p style="margin: 2px 0 0; color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 500; letter-spacing: 0.5px;">PREMIUM AUTOMOTIVE SERVICES</p>
+            </div>
+          </div>
+          
+          <!-- Right: Invoice Info -->
+          <div style="text-align: right;">
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 15px 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2);">
+              <h2 style="margin: 0 0 5px; font-size: 20px; color: white; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">INVOICE</h2>
+              <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 600;">#${bookingId}</p>
+              <div style="width: 40px; height: 2px; background: #ffd700; margin: 8px auto 0; border-radius: 1px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content with minimal spacing -->
+      <div style="padding: 25px 30px;">
+        
+        <!-- Top Section: 3-Column Layout -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+          
+          <!-- Invoice Details -->
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 18px; border-radius: 12px; border-left: 4px solid #667eea; position: relative;">
+            <div style="position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background: rgba(102,126,234,0.1); border-radius: 50%;"></div>
+            <h3 style="margin: 0 0 12px; color: #1a202c; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
+              <span style="width: 8px; height: 8px; background: #667eea; border-radius: 50%; margin-right: 10px;"></span>
+              INVOICE DETAILS
+            </h3>
+            <div style="space-y: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(100,116,139,0.1);">
+                <span style="color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase;">Date:</span>
+                <span style="color: #1a202c; font-weight: 700; font-size: 12px;">${currentDate}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0;">
+                <span style="color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase;">Service:</span>
+                <span style="color: #1a202c; font-weight: 700; font-size: 12px;">${
+                  bookingData.serviceDate
+                }</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Details -->
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 18px; border-radius: 12px; border-left: 4px solid #764ba2; position: relative;">
+            <div style="position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background: rgba(118,75,162,0.1); border-radius: 50%;"></div>
+            <h3 style="margin: 0 0 12px; color: #1a202c; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
+              <span style="width: 8px; height: 8px; background: #764ba2; border-radius: 50%; margin-right: 10px;"></span>
+              CUSTOMER
+            </h3>
+            <div style="text-align: left;">
+              <p style="margin: 0 0 6px; color: #1a202c; font-weight: 700; font-size: 14px; text-transform: uppercase;">${
+                bookingData.name
+              }</p>
+              <p style="margin: 0 0 4px; color: #64748b; font-size: 11px; font-weight: 600;">📱 ${
+                bookingData.mobile
+              }</p>
+              <p style="margin: 0; color: #64748b; font-size: 11px; font-weight: 600;">✉️ ${
+                bookingData.email
+              }</p>
+            </div>
+          </div>
+
+          <!-- Service Location -->
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 18px; border-radius: 12px; border-left: 4px solid #10b981; position: relative;">
+            <div style="position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background: rgba(16,185,129,0.1); border-radius: 50%;"></div>
+            <h3 style="margin: 0 0 12px; color: #1a202c; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
+              <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; margin-right: 10px;"></span>
+              LOCATION
+            </h3>
+            <div style="text-align: left;">
+              <p style="margin: 0 0 4px; color: #1a202c; font-size: 12px; font-weight: 600; line-height: 1.3;">${
+                bookingData.flatHouseNo
+              }, ${bookingData.areaStreet}</p>
+              ${
+                bookingData.landmark
+                  ? `<p style="margin: 0 0 4px; color: #64748b; font-size: 11px; font-weight: 500;">Near ${bookingData.landmark}</p>`
+                  : ""
+              }
+              <p style="margin: 0; color: #1a202c; font-weight: 700; font-size: 12px; text-transform: uppercase;">${
+                bookingData.townCity
+              }</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vehicle Information Section -->
+        <div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; position: relative; overflow: hidden;">
+          <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+          
+          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+              <span style="color: white; font-size: 16px; font-weight: bold;">🚗</span>
+            </div>
+            <h3 style="margin: 0; color: #1a202c; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">VEHICLE INFORMATION</h3>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+            <div style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0;">
+              <p style="margin: 0 0 6px; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">MAKE & MODEL</p>
+              <p style="margin: 0; color: #1a202c; font-weight: 800; font-size: 13px; text-transform: uppercase;">${
+                bookingData.car?.name
+              } ${bookingData.model?.name}</p>
+            </div>
+            <div style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0;">
+              <p style="margin: 0 0 6px; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">PLATE NUMBER</p>
+              <p style="margin: 0; color: #1a202c; font-weight: 800; font-size: 13px; text-transform: uppercase;">${
+                bookingData.plateNumber
+              }</p>
+            </div>
+            <div style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0;">
+              <p style="margin: 0 0 6px; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">FUEL TYPE</p>
+              <p style="margin: 0; color: #1a202c; font-weight: 800; font-size: 13px; text-transform: uppercase;">${
+                bookingData.fuelType?.name
+              }</p>
+            </div>
+            <div style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0;">
+              <p style="margin: 0 0 6px; color: #64748b; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">ODOMETER</p>
+              <p style="margin: 0; color: #1a202c; font-weight: 800; font-size: 13px; text-transform: uppercase;">${
+                bookingData.kmReading
+              } KM</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Details Table -->
+        <div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin-bottom: 20px; position: relative;">
+          <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+          
+          <div style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 15px 20px; border-bottom: 2px solid #e2e8f0;">
+            <div style="display: flex; align-items: center;">
+              <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                <span style="color: white; font-size: 16px; font-weight: bold;">🔧</span>
+              </div>
+              <h3 style="margin: 0; color: #1a202c; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">SERVICE BREAKDOWN</h3>
+            </div>
+          </div>
+          
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: linear-gradient(135deg, #1a202c, #2d3748);">
+                <th style="text-align: left; padding: 15px 20px; color: white; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-right: 1px solid rgba(255,255,255,0.1);">SERVICE DESCRIPTION</th>
+                <th style="text-align: center; padding: 15px 20px; color: white; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${services
+                .map(
+                  (service, index) => `
+                <tr style="background: ${
+                  index % 2 === 0 ? "white" : "#f8fafc"
+                }; border-bottom: 1px solid #e2e8f0;">
+                  <td style="padding: 12px 20px; color: #1a202c; font-size: 14px; font-weight: 600; border-right: 1px solid #e2e8f0;">${
+                    service.title
+                  }</td>
+                  <td style="text-align: center; padding: 12px 20px; color: #1a202c; font-weight: 700; font-size: 14px;">₹${service.price.toLocaleString()}</td>
+                </tr>
+              `
+                )
+                .join("")}
+            </tbody>
+            <tfoot>
+              <tr style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <td style="padding: 18px 20px; color: white; font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; border-right: 1px solid rgba(255,255,255,0.2);">TOTAL AMOUNT</td>
+                <td style="text-align: center; padding: 18px 20px; color: #ffd700; font-weight: 900; font-size: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">₹${totalPrice.toLocaleString()}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Professional Footer -->
+        <div style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); padding: 20px 25px; border-radius: 12px; text-align: center; color: white; position: relative; overflow: hidden; margin-top: 10px;">
+          <!-- Decorative elements -->
+          <div style="position: absolute; top: -15px; left: -15px; width: 60px; height: 60px; background: rgba(255,215,0,0.1); border-radius: 50%;"></div>
+          <div style="position: absolute; bottom: -10px; right: -10px; width: 40px; height: 40px; background: rgba(102,126,234,0.1); border-radius: 50%;"></div>
+          
+          <div style="position: relative; z-index: 2;">
+            <!-- Thank you message -->
+            <div style="margin-bottom: 15px;">
+              <h4 style="margin: 0 0 6px; font-size: 16px; color: #ffd700; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">THANK YOU FOR CHOOSING TWICK7!</h4>
+              <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 500;">Premium automotive care you can trust</p>
+            </div>
+            
+            <!-- Contact info in professional layout -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.2); border-bottom: 1px solid rgba(255,255,255,0.2);">
+              <div style="text-align: center;">
+                <p style="margin: 0 0 4px; font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">EMAIL SUPPORT</p>
+                <p style="margin: 0; font-size: 13px; color: white; font-weight: 700;">support@twick7.com</p>
+              </div>
+              <div style="text-align: center;">
+                <p style="margin: 0 0 4px; font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">PHONE SUPPORT</p>
+                <p style="margin: 0; font-size: 13px; color: white; font-weight: 700;">+91 1234567890</p>
+              </div>
+            </div>
+            
+            <!-- Copyright -->
+            <p style="margin: 0; font-size: 6px; color: rgba(255,255,255,0.6); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">© ${new Date().getFullYear()} TWICK7 • ALL RIGHTS RESERVED • PREMIUM AUTOMOTIVE SERVICES</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+    // Add the element to the DOM
+    document.body.appendChild(invoiceElement);
+
+    try {
+      // Convert the HTML to canvas optimized for single page
+      const canvas = await html2canvas(invoiceElement, {
+        scale: 2, // Balanced quality for single page
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        width: 800,
+        height: invoiceElement.scrollHeight,
+      });
+
+      // Convert canvas to PDF - single page optimized
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      // Calculate dimensions to fit on single page
+      const canvasAspectRatio = canvas.width / canvas.height;
+      const pdfAspectRatio = pdfWidth / pdfHeight;
+
+      let finalWidth, finalHeight;
+
+      if (canvasAspectRatio > pdfAspectRatio) {
+        // Canvas is wider, fit to width
+        finalWidth = pdfWidth;
+        finalHeight = pdfWidth / canvasAspectRatio;
+      } else {
+        // Canvas is taller, fit to height
+        finalHeight = pdfHeight;
+        finalWidth = pdfHeight * canvasAspectRatio;
+      }
+
+      // Center the image on the page
+      const xOffset = (pdfWidth - finalWidth) / 2;
+      const yOffset = (pdfHeight - finalHeight) / 2;
+
+      pdf.addImage(imgData, "PNG", xOffset, yOffset, finalWidth, finalHeight);
+
+      // Save with enhanced filename
+      const timestamp = new Date().toISOString().slice(0, 10);
+      pdf.save(`Twick7-Premium-Invoice-${bookingId}-${timestamp}.pdf`);
+
+      // Show success message (assuming you have a toast system)
+      if (typeof toast !== "undefined") {
+        toast.success("Invoice downloaded successfully!");
+      }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      if (typeof toast !== "undefined") {
+        toast.error("Failed to generate invoice. Please try again.");
+      }
+    } finally {
+      // Clean up
+      document.body.removeChild(invoiceElement);
+    }
   };
 
   const handleWhatsAppUpdate = () => {
@@ -312,7 +580,7 @@ export function BookingModal() {
         isOpen={showConfirmation}
         onClose={() => {
           setShowConfirmation(false);
-          resetBooking(); // Reset booking data when confirmation modal closes
+          resetBooking();
         }}
         bookingId={bookingId}
         onDownloadInvoice={handleDownloadInvoice}

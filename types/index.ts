@@ -37,7 +37,7 @@ export interface ServiceType {
 }
 
 export interface BookingData {
-  state: State | null;
+  state: State | 'Bangaluru';
   car: Car | null;
   model: CarModel | null;
   fuelType: FuelType | null;
