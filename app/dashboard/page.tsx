@@ -9,7 +9,7 @@ import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Car, Clock, CreditCard, MapPin, Phone, User, ChevronDown, ChevronUp, Truck, Wrench, Droplets, Shield, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, Car, Clock, CreditCard, MapPin, Phone, User, ChevronDown, ChevronUp, Truck, Wrench, Droplets, Shield, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from 'lucide-react';
 import { ServiceTracking } from '@/components/service-tracking';
 import { motion } from 'framer-motion';
 import { Booking } from '@/types';
