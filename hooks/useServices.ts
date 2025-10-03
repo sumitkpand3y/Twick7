@@ -25,6 +25,9 @@ export function useServices(category?: string) {
     try {
       const response = await servicesService.getAllServices(categoryFilter);
 
+      console.log("response", response);
+      
+
       if (response.success && response.data) {
         setServices(response.data);
         return response.data;

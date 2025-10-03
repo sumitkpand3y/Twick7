@@ -55,7 +55,7 @@ class BookingService {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1/bookings';
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {

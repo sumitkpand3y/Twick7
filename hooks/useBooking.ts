@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { bookingService } from '@/services/booking.service';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import { bookingService } from "@/services/booking.service";
+import toast from "react-hot-toast";
 
 interface FieldErrors {
   [key: string]: string;
@@ -18,47 +18,45 @@ export function useBooking() {
 
     try {
       const payload = {
-        brand: bookingData.car?.name || '',
-        model: bookingData.model?.name || '',
-        year: bookingData.model?.year || new Date().getFullYear(),
-        fuelType: bookingData.fuelType?.name || '',
-        transmission: bookingData.transmission || 'MANUAL',
-        variant: bookingData.variant || '',
-        plateNumber: bookingData.plateNumber || '',
+        car: bookingData.car?.name || "",
+        model: bookingData.model?.name || "",
+        yearOfMaking: bookingData.model?.year || new Date().getFullYear(),
+        fuelType: bookingData.fuelType?.name.toLowerCase() || "",
+        transmission: bookingData.transmission || "MANUAL",
+        variant: bookingData.variant || "",
+        plateNumber: bookingData.plateNumber || "",
         kmReading: parseInt(bookingData.kmReading) || 0,
         serviceIds: Array.isArray(bookingData.serviceType)
           ? bookingData.serviceType.map((s: any) => s.id || s)
           : [],
-        scheduledDate: bookingData.serviceDate || '',
-        scheduledTime: bookingData.serviceTime || '10:00',
-        pickupAddress: {
-          flatHouseNo: bookingData.flatHouseNo || '',
-          areaStreet: bookingData.areaStreet || '',
-          landmark: bookingData.landmark || '',
-          townCity: bookingData.townCity || '',
-          state: bookingData.state || '',
-          pincode: bookingData.pincode || '',
-        },
-        customerComplaint: bookingData.complaint || '',
-        customerName: bookingData.name || '',
-        customerEmail: bookingData.email || '',
-        customerMobile: bookingData.mobile || '',
+        serviceDate: bookingData.serviceDate || "",
+        scheduledTime: bookingData.serviceTime || "10:00",
+        flatNo: bookingData.flatHouseNo || "",
+        area: bookingData.areaStreet || "",
+        landmark: bookingData.landmark || "",
+        City: bookingData.townCity || "",
+        state: bookingData.state || "",
+        pincode: bookingData.pincode || "",
+        customerComplaint: bookingData.complaint || "",
+        name: bookingData.name || "",
+        email: bookingData.email || "",
+        mobile: bookingData.mobile || "",
       };
 
       const response = await bookingService.createBookingFromCustomer(payload);
 
       if (response.success) {
-        toast.success('Booking created successfully!');
+        toast.success("Booking created successfully!");
         return response.data;
       }
 
-      throw new Error(response.error?.message || 'Failed to create booking');
+      throw new Error(response.error?.message || "Failed to create booking");
     } catch (err: any) {
-      const errorMessage = err.message || 'Failed to create booking';
+      const errorMessage = err.message || "Failed to create booking";
       setError(errorMessage);
       toast.error(errorMessage);
 
-      if (err.code === 'VALIDATION_ERROR' && err.fields) {
+      if (err.code === "VALIDATION_ERROR" && err.fields) {
         setFieldErrors(err.fields);
       }
 
@@ -76,7 +74,7 @@ export function useBooking() {
       const response = await bookingService.getCustomerBookings();
       return response.data || [];
     } catch (err: any) {
-      const errorMessage = err.message || 'Failed to fetch bookings';
+      const errorMessage = err.message || "Failed to fetch bookings";
       setError(errorMessage);
       toast.error(errorMessage);
       return [];
@@ -93,7 +91,7 @@ export function useBooking() {
       const response = await bookingService.getBookingDetails(bookingId);
       return response.data;
     } catch (err: any) {
-      const errorMessage = err.message || 'Failed to fetch booking details';
+      const errorMessage = err.message || "Failed to fetch booking details";
       setError(errorMessage);
       toast.error(errorMessage);
       return null;
@@ -112,7 +110,7 @@ export function useBooking() {
       const vehicles = await bookingService.getVehicleCompatibility(params);
       return vehicles;
     } catch (err: any) {
-      console.error('Failed to fetch vehicle compatibility:', err);
+      console.error("Failed to fetch vehicle compatibility:", err);
       return [];
     }
   };
