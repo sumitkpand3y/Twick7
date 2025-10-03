@@ -6,12 +6,14 @@ import { Stepper } from "@/components/ui/stepper";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useBookingStore } from "@/store/booking-store";
 import { useAuthStore } from "@/store/auth-store";
+import { useBooking } from "@/hooks/useBooking";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/ui/form-error";
 import {
   bookingValidationSchema,
   BookingStepValidation,
 } from "@/lib/validation";
+import { validateStep, FieldError } from "@/utils/form-validation.utils";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { StateStep } from "./steps/state-step";
@@ -64,15 +66,18 @@ export function BookingModal() {
     bookingData,
     resetBooking,
   } = useBookingStore();
-  const { user, sendWhatsAppNotification } = useAuthStore();
-  const [validationError, setValidationError] = useState<string>("");
+  const { user, setAuthModalOpen } = useAuthStore();
+  const { createBooking, isLoading: isBookingLoading } = useBooking();
+  const [validationErrors, setValidationErrors] = useState<FieldError[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingId, setBookingId] = useState("");
+  const [pendingBooking, setPendingBooking] = useState(false);
 
   const handleClose = () => {
     setModalOpen(false);
     resetBooking();
-    setValidationError("");
+    setValidationErrors([]);
+    setPendingBooking(false);
   };
 
   const validateCurrentStep = (): boolean => {
@@ -81,26 +86,24 @@ export function BookingModal() {
     const validationKey = stepValidationKeys[currentStep];
     const schema = bookingValidationSchema[validationKey];
 
-    try {
-      if (validationKey === "service") {
-        const serviceData = {
-          serviceType: Array.isArray(bookingData.serviceType)
-            ? bookingData.serviceType
-            : bookingData.serviceType
-            ? [bookingData.serviceType]
-            : [],
-        };
-        schema.parse(serviceData);
-      } else {
-        schema.parse(bookingData);
-      }
+    let dataToValidate = bookingData;
+    if (validationKey === "service") {
+      dataToValidate = {
+        serviceType: Array.isArray(bookingData.serviceType)
+          ? bookingData.serviceType
+          : bookingData.serviceType
+          ? [bookingData.serviceType]
+          : [],
+      };
+    }
 
-      setValidationError("");
+    const result = validateStep(schema, dataToValidate);
+
+    if (result.success) {
+      setValidationErrors([]);
       return true;
-    } catch (error: any) {
-      const errorMessage =
-        error.errors?.[0]?.message || "Please fill all required fields";
-      setValidationError(errorMessage);
+    } else {
+      setValidationErrors(result.errors);
       return false;
     }
   };
@@ -117,81 +120,44 @@ export function BookingModal() {
   };
 
   const goToPrevStep = () => {
-    setValidationError("");
+    setValidationErrors([]);
     setCurrentStep(Math.max(currentStep - 1, 0));
   };
 
   const handleConfirmBooking = async () => {
     if (!user) {
+      setPendingBooking(true);
+      setAuthModalOpen(true);
       toast.error("Please login to confirm booking");
       return;
     }
 
+    await processBooking();
+  };
+
+  const processBooking = async () => {
     try {
-      // Validate all steps
-      for (let i = 0; i < stepValidationKeys.length; i++) {
-        const validationKey = stepValidationKeys[i];
-        const schema = bookingValidationSchema[validationKey];
+      const result = await createBooking(bookingData);
 
-        if (validationKey === "service") {
-          const serviceData = {
-            serviceType: Array.isArray(bookingData.serviceType)
-              ? bookingData.serviceType
-              : bookingData.serviceType
-              ? [bookingData.serviceType]
-              : [],
-          };
-          schema.parse(serviceData);
-        } else {
-          schema.parse(bookingData);
-        }
+      if (result) {
+        setBookingId(result.bookingNumber || result.id);
+        setShowConfirmation(true);
+        setPendingBooking(false);
       }
-
-      // Generate booking ID
-      const newBookingId = `BK${Date.now().toString().slice(-6)}`;
-      setBookingId(newBookingId);
-
-      // Save booking data
-      const bookingPayload = {
-        id: newBookingId,
-        ...bookingData,
-        serviceType: Array.isArray(bookingData.serviceType)
-          ? bookingData.serviceType
-          : bookingData.serviceType
-          ? [bookingData.serviceType]
-          : [],
-        status: "scheduled",
-        createdAt: new Date().toISOString(),
-      };
-
-      // Save to localStorage
-      const existingBookings = JSON.parse(
-        localStorage.getItem("bookings") || "[]"
-      );
-      existingBookings.push(bookingPayload);
-      localStorage.setItem("bookings", JSON.stringify(existingBookings));
-
-      // Send WhatsApp notification
-      const message = `Hi ${bookingData.name}! Your car service booking has been confirmed. Booking ID: ${newBookingId}. We will contact you soon for pickup scheduling.`;
-      sendWhatsAppNotification(message, bookingData.mobile);
-
-      // Close modal and show confirmation
-      setShowConfirmation(true);
-      // setModalOpen(false);
-
-      toast.success("Booking confirmed successfully!");
     } catch (error: any) {
-      const errorMessage =
-        error.errors?.[0]?.message ||
-        "Please fill all required fields correctly";
-      setValidationError(errorMessage);
-      toast.error(errorMessage);
+      console.error('Booking creation failed:', error);
     }
   };
 
+  useEffect(() => {
+    if (pendingBooking && user) {
+      processBooking();
+    }
+  }, [user, pendingBooking]);
+
   const handleStepClick = (step: number) => {
     if (step <= currentStep) {
-      setValidationError("");
+      setValidationErrors([]);
       setCurrentStep(step);
     }
   };
@@ -545,12 +511,15 @@ export function BookingModal() {
 
           {/* Footer - Sticky */}
           <div className="sticky bottom-0 bg-white border-t p-4 sm:p-6">
-            {validationError && (
-              <div className="mb-4">
-                <FormError
-                  message={validationError}
-                  className="justify-center"
-                />
+            {validationErrors.length > 0 && (
+              <div className="mb-4 space-y-2">
+                {validationErrors.map((error, index) => (
+                  <FormError
+                    key={index}
+                    message={error.message}
+                    className="justify-center"
+                  />
+                ))}
               </div>
             )}
 
@@ -565,9 +534,13 @@ export function BookingModal() {
                 Previous
               </Button>
 
-              <Button onClick={goToNextStep} className="order-1 sm:order-2">
-                {currentStep === steps.length - 1 ? "Confirm Booking" : "Next"}
-                {currentStep !== steps.length - 1 && (
+              <Button
+                onClick={goToNextStep}
+                className="order-1 sm:order-2"
+                disabled={isBookingLoading}
+              >
+                {isBookingLoading ? "Processing..." : (currentStep === steps.length - 1 ? "Confirm Booking" : "Next")}
+                {currentStep !== steps.length - 1 && !isBookingLoading && (
                   <ArrowRight className="w-4 h-4 ml-2" />
                 )}
               </Button>

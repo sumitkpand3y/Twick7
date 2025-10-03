@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useContact } from "@/hooks/useContact";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Clock, Send, Wrench, Navigation } from "lucide-react";
 import {
@@ -25,35 +26,29 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
 export default function Contact() {
+  const { submitContact, isLoading, fieldErrors } = useContact();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    mobile: "",
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const success = await submitContact(formData);
 
-    console.log("Form submitted:", formData);
-    setIsSubmitting(false);
-
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
-
-    alert("Thank you for your message! We'll get back to you soon.");
+    if (success) {
+      setFormData({
+        name: "",
+        email: "",
+        mobile: "",
+        subject: "",
+        message: "",
+      });
+    }
   };
 
   const contactInfo = [
@@ -226,20 +221,23 @@ export default function Contact() {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="phone">Phone Number *</Label>
+                          <Label htmlFor="mobile">Phone Number *</Label>
                           <Input
-                            id="phone"
+                            id="mobile"
                             type="tel"
                             required
-                            value={formData.phone}
+                            value={formData.mobile}
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
-                                phone: e.target.value,
+                                mobile: e.target.value,
                               }))
                             }
                             placeholder="Enter your phone number"
                           />
+                          {fieldErrors.mobile && (
+                            <p className="text-sm text-red-600 mt-1">{fieldErrors.mobile}</p>
+                          )}
                         </div>
                       </div>
 
@@ -305,10 +303,10 @@ export default function Contact() {
 
                       <Button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isLoading}
                         className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
                       >
-                        {isSubmitting ? (
+                        {isLoading ? (
                           <motion.div
                             animate={{ rotate: 360 }}
                             transition={{
@@ -321,7 +319,7 @@ export default function Contact() {
                         ) : (
                           <Send className="w-4 h-4 mr-2" />
                         )}
-                        {isSubmitting ? "Sending..." : "Send Message"}
+                        {isLoading ? "Sending..." : "Send Message"}
                       </Button>
                     </form>
                   </CardContent>

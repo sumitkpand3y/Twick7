@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useBookingStore } from '@/store/booking-store';
+import { useBooking } from '@/hooks/useBooking';
 import { cars } from '@/lib/data';
 import { Car } from '@/types';
 import { motion } from 'framer-motion';
@@ -11,8 +12,10 @@ import { Search } from 'lucide-react';
 
 export function CarStep() {
   const { bookingData, setBookingData } = useBookingStore();
+  const { getVehicleCompatibility } = useBooking();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredCars, setFilteredCars] = useState(cars);
+  const [apiCars, setApiCars] = useState<any[]>([]);
 
   useEffect(() => {
     setFilteredCars(

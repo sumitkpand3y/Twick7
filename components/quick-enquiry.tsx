@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useContact } from '@/hooks/useContact';
 import { Modal } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,8 +18,9 @@ import toast from 'react-hot-toast';
 const enquirySchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   mobile: z.string().regex(/^[6-9]\d{9}$/, 'Please enter a valid mobile number'),
-  carModel: z.string().min(1, 'Please select your car model'),
-  issue: z.string().min(10, 'Please describe your issue (minimum 10 characters)'),
+  email: z.string().email('Please enter a valid email').optional().or(z.literal('')),
+  vehicleBrand: z.string().min(1, 'Please enter your car model'),
+  message: z.string().min(10, 'Please describe your issue (minimum 10 characters)'),
 });
 
 type EnquiryFormData = z.infer<typeof enquirySchema>;
@@ -29,7 +31,7 @@ interface QuickEnquiryProps {
 }
 
 export function QuickEnquiry({ isOpen, onClose }: QuickEnquiryProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { submitQuickEnquiry, isLoading } = useContact();
   
   const {
     register,
@@ -41,30 +43,11 @@ export function QuickEnquiry({ isOpen, onClose }: QuickEnquiryProps) {
   });
 
   const onSubmit = async (data: EnquiryFormData) => {
-    setIsSubmitting(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Save to localStorage (simulate saving to JSON)
-      const enquiries = JSON.parse(localStorage.getItem('enquiries') || '[]');
-      const newEnquiry = {
-        id: Date.now().toString(),
-        ...data,
-        timestamp: new Date().toISOString(),
-        status: 'pending'
-      };
-      enquiries.push(newEnquiry);
-      localStorage.setItem('enquiries', JSON.stringify(enquiries));
-      
-      toast.success('Enquiry submitted successfully! We will contact you soon.');
+    const success = await submitQuickEnquiry(data);
+
+    if (success) {
       reset();
       onClose();
-    } catch (error) {
-      toast.error('Failed to submit enquiry. Please try again.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -114,35 +97,47 @@ export function QuickEnquiry({ isOpen, onClose }: QuickEnquiryProps) {
           </div>
 
           <div>
-            <Label htmlFor="carModel">Car Model *</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="carModel"
-              {...register('carModel')}
-              placeholder="e.g., Maruti Swift, Hyundai Creta"
+              id="email"
+              type="email"
+              {...register('email')}
+              placeholder="Enter your email (optional)"
               className="mt-1"
             />
-            <FormError message={errors.carModel?.message} />
+            <FormError message={errors.email?.message} />
           </div>
 
           <div>
-            <Label htmlFor="issue">Describe Your Issue *</Label>
+            <Label htmlFor="vehicleBrand">Car Model *</Label>
+            <Input
+              id="vehicleBrand"
+              {...register('vehicleBrand')}
+              placeholder="e.g., Maruti Swift, Hyundai Creta"
+              className="mt-1"
+            />
+            <FormError message={errors.vehicleBrand?.message} />
+          </div>
+
+          <div>
+            <Label htmlFor="message">Describe Your Issue *</Label>
             <Textarea
-              id="issue"
-              {...register('issue')}
+              id="message"
+              {...register('message')}
               placeholder="Describe your car issue or service requirement..."
               rows={3}
               className="mt-1"
             />
-            <FormError message={errors.issue?.message} />
+            <FormError message={errors.message?.message} />
           </div>
 
           <div className="space-y-3 pt-4">
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isLoading}
               className="w-full"
             >
-              {isSubmitting ? (
+              {isLoading ? (
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -151,7 +146,7 @@ export function QuickEnquiry({ isOpen, onClose }: QuickEnquiryProps) {
               ) : (
                 <Send className="w-4 h-4 mr-2" />
               )}
-              {isSubmitting ? 'Submitting...' : 'Submit Enquiry'}
+              {isLoading ? 'Submitting...' : 'Submit Enquiry'}
             </Button>
 
             <div className="relative">

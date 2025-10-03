@@ -3,27 +3,37 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth-store';
+import { useBooking } from '@/hooks/useBooking';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Car, Clock, CreditCard, MapPin, Phone, User, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Car, Clock, CreditCard, MapPin, Phone, User, ChevronDown, ChevronUp, Truck, Wrench, Droplets, Shield, CheckCircle, AlertCircle } from 'lucide-react';
 import { ServiceTracking } from '@/components/service-tracking';
 import { motion } from 'framer-motion';
 import { Booking } from '@/types';
 
 export default function Dashboard() {
-  const { user, bookings, notifications, sendWhatsAppNotification } = useAuthStore();
+  const { user, sendWhatsAppNotification } = useAuthStore();
+  const { getCustomerBookings, isLoading } = useBooking();
   const router = useRouter();
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [expandedBooking, setExpandedBooking] = useState<string | null>(null);
   const [expandedActiveService, setExpandedActiveService] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
       router.push('/');
+    } else {
+      fetchBookings();
     }
   }, [user, router]);
+
+  const fetchBookings = async () => {
+    const fetchedBookings = await getCustomerBookings();
+    setBookings(fetchedBookings);
+  };
 
   const toggleBooking = (bookingId: string) => {
     setExpandedBooking(expandedBooking === bookingId ? null : bookingId);
