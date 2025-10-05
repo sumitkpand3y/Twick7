@@ -65,11 +65,12 @@ export const bookingValidationSchema = {
     name: z.string().min(2, "Name must be at least 2 characters"),
     mobile: z
       .string()
-      .regex(/^[6-9]\d{9}$/, "Please enter a valid mobile number"),
+      .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit mobile number"),
     email: z.string().email("Please enter a valid email address"),
     flatHouseNo: z.string().nonempty("Please enter flat/house number"),
     areaStreet: z.string().nonempty("Please enter area/street"),
     townCity: z.string().nonempty("Please enter town/city"),
+    pincode: z.string().regex(/^\d{6}$/, "Please enter a valid 6-digit pincode"),
     landmark: z.string().optional(),
   }),
   service: z.object({

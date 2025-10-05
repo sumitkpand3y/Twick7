@@ -39,7 +39,7 @@ export function ServiceStep() {
         name: service.name,
         description: service.description,
         price: parseInt(service.price),
-        duration: service.durationṣ,
+        duration: service.duration,
         estimatedTime: service.estimatedTime,
         category: service.category,
         isPopular: service.popularity === "High",

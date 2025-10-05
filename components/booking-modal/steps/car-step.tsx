@@ -1,124 +1,104 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useBookingStore } from "@/store/booking-store";
 import { useBooking } from "@/hooks/useBooking";
 import { Car } from "@/types";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
-import { Search, AlertCircle } from "lucide-react";
+import { Search, AlertCircle, Loader2, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/utils/form-validation.utils";
+import { cn } from "@/lib/utils";
 
-export function CarStep() {
+interface CarStepProps {
+  validationErrors: FieldError[];
+  onFieldValidation?: (field: string, isValid: boolean) => void;
+}
+
+export function CarStep({ validationErrors, onFieldValidation }: CarStepProps) {
   const { bookingData, setBookingData } = useBookingStore();
   const { getVehicleCompatibility } = useBooking();
   const [searchTerm, setSearchTerm] = useState("");
-  const [allCars, setAllCars] = useState<Car[]>([]); // Store all cars separately
-  const [filteredCars, setFilteredCars] = useState<Car[]>([]); // Store filtered results
+  const [allCars, setAllCars] = useState<Car[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch vehicle compatibility data on component mount
-  useEffect(() => {
-    const fetchVehicleCompatibility = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const vehicles = await getVehicleCompatibility({});
+  const fetchVehicleCompatibility = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const vehicles = await getVehicleCompatibility({});
 
-        if (!vehicles || vehicles.length === 0) {
-          setError("No vehicles found. Please try again later.");
-          setAllCars([]);
-          return;
-        }
-
-        // Transform API response to Car type
-        const uniqueBrands = Array.from(
-          new Map(vehicles.map((vehicle) => [vehicle.brand, vehicle])).values()
-        );
-
-        const transformedCars: Car[] = uniqueBrands.map((vehicle, index) => ({
-          id: vehicle.id || `car-${index}`,
-          name: vehicle.brand,
-          image: `/cars/${vehicle.brand.toLowerCase()}.png`,
-          models: vehicles
-            .filter((v) => v.brand === vehicle.brand)
-            .map((v) => ({
-              id: v.id,
-              name: v.model,
-              image: `/cars/${vehicle.brand.toLowerCase()}-${v.model.toLowerCase()}.jpg`,
-              year: v.year,
-            })),
-        }));
-
-        setAllCars(transformedCars);
-        setFilteredCars(transformedCars); // Initialize filtered cars with all cars
-      } catch (error) {
-        console.error("Error fetching vehicle compatibility:", error);
-        setError("Failed to load vehicles. Please try again.");
+      if (!vehicles || vehicles.length === 0) {
+        setError("No vehicles found. Please try again later.");
         setAllCars([]);
-        setFilteredCars([]);
-      } finally {
-        setIsLoading(false);
+        return;
       }
-    };
 
+      const uniqueBrands = Array.from(
+        new Map(vehicles.map((vehicle) => [vehicle.brand, vehicle])).values()
+      );
+
+      const transformedCars: Car[] = uniqueBrands.map((vehicle, index) => ({
+        id: vehicle.id || `car-${index}`,
+        name: vehicle.brand,
+        image: `/cars/${vehicle.brand.toLowerCase().replace(/\s+/g, '-')}.png`,
+        models: vehicles
+          .filter((v) => v.brand === vehicle.brand)
+          .map((v) => ({
+            id: v.id,
+            name: v.model,
+            image: `/cars/${vehicle.brand.toLowerCase()}-${v.model.toLowerCase()}.jpg`,
+            year: v.year,
+          })),
+      }));
+
+      setAllCars(transformedCars);
+      onFieldValidation?.('car', false);
+    } catch (error) {
+      console.error("Error fetching vehicle compatibility:", error);
+      setError("Failed to load vehicles. Please try again.");
+      setAllCars([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchVehicleCompatibility();
   }, []);
 
-  // Filter cars based on search term - FIXED: No infinite loop
   useEffect(() => {
-    if (allCars.length > 0) {
-      const filtered = allCars.filter((car) =>
-        car.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredCars(filtered);
-    } else {
-      setFilteredCars([]);
+    if (bookingData.car) {
+      onFieldValidation?.('car', true);
     }
-  }, [searchTerm, allCars]); // Only depend on searchTerm and allCars
+  }, [bookingData.car, onFieldValidation]);
+
+  const filteredCars = useMemo(() => {
+    if (allCars.length === 0) return [];
+    return allCars.filter((car) =>
+      car.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, allCars]);
 
   const handleCarSelect = (car: Car) => {
     setBookingData({ car, model: null });
+    onFieldValidation?.('car', true);
   };
 
   const handleRetry = () => {
-    setError(null);
-    // Re-fetch data
-    const fetchVehicleCompatibility = async () => {
-      setIsLoading(true);
-      try {
-        const vehicles = await getVehicleCompatibility({});
-        // ... same transformation logic as above
-        const uniqueBrands = Array.from(
-          new Map(vehicles.map((vehicle) => [vehicle.brand, vehicle])).values()
-        );
-
-        const transformedCars: Car[] = uniqueBrands.map((vehicle, index) => ({
-          id: vehicle.id || `car-${index}`,
-          name: vehicle.brand,
-          image: `/cars/${vehicle.brand.toLowerCase()}.jpg`,
-          models: vehicles
-            .filter((v) => v.brand === vehicle.brand)
-            .map((v) => ({
-              id: v.id,
-              name: v.model,
-              image: `/cars/${vehicle.brand.toLowerCase()}-${v.model.toLowerCase()}.jpg`,
-              year: v.year,
-            })),
-        }));
-
-        setAllCars(transformedCars);
-        setFilteredCars(transformedCars);
-      } catch (error) {
-        setError("Failed to load vehicles. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchVehicleCompatibility();
+  };
+
+  const getError = (fieldName: string): string | undefined => {
+    return validationErrors.find((err) => err.field === fieldName)?.message;
+  };
+
+  const hasError = (fieldName: string): boolean => {
+    return validationErrors.some((err) => err.field === fieldName);
   };
 
   if (isLoading) {
@@ -128,14 +108,11 @@ export function CarStep() {
           <h2 className="text-2xl font-bold mb-2">Select Your Car Brand</h2>
           <p className="text-muted-foreground">Loading cars...</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          {[...Array(12)].map((_, index) => (
-            <div key={index} className="border rounded-lg p-6 animate-pulse">
-              <div className="w-full h-16 bg-gray-200 rounded-md mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded"></div>
-            </div>
-          ))}
+        <div className="flex justify-center items-center py-12">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+            <p className="text-muted-foreground">Fetching vehicle brands...</p>
+          </div>
         </div>
       </div>
     );
@@ -149,16 +126,19 @@ export function CarStep() {
           <p className="text-muted-foreground">Choose your car brand</p>
         </div>
 
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription className="flex justify-between items-center">
-            <span>{error}</span>
-            <button
+        <Alert variant="destructive" className="border-2">
+          <AlertCircle className="h-5 w-5" />
+          <AlertDescription className="flex flex-col gap-3">
+            <p className="font-semibold">{error}</p>
+            <Button
               onClick={handleRetry}
-              className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors"
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto bg-white hover:bg-gray-50"
             >
-              Retry
-            </button>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry Loading
+            </Button>
           </AlertDescription>
         </Alert>
       </div>
@@ -180,55 +160,110 @@ export function CarStep() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
         />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm("")}
+            className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {filteredCars.length === 0 && allCars.length > 0 ? (
-        <div className="text-center py-10">
-          <p className="text-muted-foreground">
-            No cars found matching "{searchTerm}"
+        <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed">
+          <Search className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+          <p className="text-lg font-semibold text-foreground mb-1">
+            No cars found
           </p>
+          <p className="text-sm text-muted-foreground mb-4">
+            No cars match "{searchTerm}"
+          </p>
+          <Button variant="outline" size="sm" onClick={() => setSearchTerm("")}>
+            Clear Search
+          </Button>
         </div>
       ) : filteredCars.length === 0 && allCars.length === 0 ? (
-        <div className="text-center py-10">
-          <p className="text-muted-foreground">
+        <div className="text-center py-12 bg-muted/30 rounded-lg border-2 border-dashed">
+          <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+          <p className="text-lg font-semibold text-foreground mb-1">
+            No cars available
+          </p>
+          <p className="text-sm text-muted-foreground">
             No cars available at the moment
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          {filteredCars.map((car, index) => (
-            <motion.div
-              key={car.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div
-                className={`border rounded-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                  bookingData.car?.id === car.id
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
-                }`}
-                onClick={() => handleCarSelect(car)}
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+            {filteredCars.map((car, index) => (
+              <motion.div
+                key={car.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
               >
-                <Image
-                  src={car.image}
-                  alt={car.name}
-                  className="w-full h-16 object-cover rounded-md mb-4"
-                  width={240}
-                  height={120}
-                 
-                />
-                <h3 className="font-semibold text-center text-sm">
-                  {car.name}
-                </h3>
-                <p className="text-sm text-muted-foreground text-center mt-1">
-                  {car.models.length} models available
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                <div
+                  className={cn(
+                    "border rounded-lg p-4 cursor-pointer transition-all duration-300 hover:shadow-lg relative",
+                    bookingData.car?.id === car.id
+                      ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                      : "border-border hover:border-primary/50"
+                  )}
+                  onClick={() => handleCarSelect(car)}
+                >
+                  {bookingData.car?.id === car.id && (
+                    <div className="absolute -top-2 -right-2 bg-primary text-white rounded-full p-1 z-10">
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                  )}
+                  <div className="relative w-full h-16 mb-3">
+                    <Image
+                      src={car.image}
+                      alt={car.name}
+                      fill
+                      className="object-contain rounded-md"
+                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/cars/default-car.png';
+                      }}
+                    />
+                  </div>
+                  <h3 className="font-semibold text-center text-sm truncate">
+                    {car.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground text-center mt-1">
+                    {car.models.length} {car.models.length === 1 ? 'model' : 'models'}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center text-sm text-muted-foreground">
+            Showing {filteredCars.length} of {allCars.length} brands
+          </div>
+        </>
+      )}
+
+      {hasError('car') && (
+        <Alert variant="destructive" className="border-2 animate-in fade-in-50">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="flex items-center justify-between">
+            <span className="font-medium">{getError('car')}</span>
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   );

@@ -1,42 +1,126 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ServiceType } from '@/types';
-import { popularServices } from '@/lib/data';
 import { useBookingStore } from '@/store/booking-store';
 import { useAuthStore } from '@/store/auth-store';
-import { Clock, Star, ArrowRight } from 'lucide-react';
+import { useServices } from '@/hooks/useServices';
+import { Clock, Star, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 export function PopularServices() {
-  const { setModalOpen , toggleServiceType} = useBookingStore();
+  const { setModalOpen, toggleServiceType } = useBookingStore();
   const { user, setAuthModalOpen } = useAuthStore();
+  const { services, isLoading, error } = useServices();
+  const [popularServices, setPopularServices] = useState<ServiceType[]>([]);
+
+  useEffect(() => {
+    if (services && services.length > 0) {
+      const popular = services
+        .filter((service: any) => service.popularity === 'High')
+        .slice(0, 6)
+        .map((service: any) => ({
+          id: service.id,
+          title: service.name,
+          name: service.name,
+          description: service.description,
+          price: parseInt(service.price),
+          duration: service.duration,
+          estimatedTime: service.duration,
+          category: service.category,
+          isPopular: true,
+          features: service.skillsRequired || [],
+          icon: '🔧',
+          popular: true,
+          originalPrice: parseInt(service.price) + 500,
+        }));
+
+      setPopularServices(popular);
+    }
+  }, [services]);
 
   const handleBookNow = (service: ServiceType) => {
-    // if (user) {
-      toggleServiceType(service)
-      setModalOpen(true);
-    // } else {
-    //   setAuthModalOpen(true);
-    // }
+    toggleServiceType(service);
+    setModalOpen(true);
   };
+
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
+              Popular Services
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Loading our most popular services...
+            </p>
+          </div>
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
+              Popular Services
+            </h2>
+          </div>
+          <div className="max-w-md mx-auto text-center p-8 bg-white rounded-lg shadow-sm">
+            <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Link href="/services">
+              <Button variant="outline">View All Services</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (popularServices.length === 0) {
+    return (
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
+              Popular Services
+            </h2>
+          </div>
+          <div className="max-w-md mx-auto text-center p-8 bg-white rounded-lg shadow-sm">
+            <p className="text-gray-600 mb-4">No popular services available at the moment</p>
+            <Link href="/services">
+              <Button variant="outline">View All Services</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-4xl font-bold mb-4 text-gray-800"
           >
-            🛠️ Popular Services
+            Popular Services
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -72,10 +156,10 @@ export function PopularServices() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
                     {service.description}
                   </p>
-                  
+
                   <div className="flex items-center text-sm text-gray-500">
                     <Clock className="w-4 h-4 mr-1" />
                     {service.estimatedTime}
@@ -99,7 +183,7 @@ export function PopularServices() {
                     )}
                   </div>
 
-                  <Button 
+                  <Button
                     onClick={() => handleBookNow(service)}
                     className="w-full group-hover:bg-primary group-hover:text-white transition-all duration-300"
                     variant="outline"
@@ -114,9 +198,9 @@ export function PopularServices() {
         </div>
 
         <div className="text-center mt-12">
-          <Link 
-          href={'/services'}
-            className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-semibold"
+          <Link
+            href={'/services'}
+            className="inline-block bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-semibold transition-colors"
           >
             View All Services
           </Link>
