@@ -6,7 +6,7 @@ import { useServices } from "@/hooks/useServices";
 import { ServiceType } from "@/types";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Check, Clock, Loader2 } from "lucide-react";
+import { Check, Clock, Loader as Loader2 } from "lucide-react";
 
 // Define the API service interface
 interface ApiService {

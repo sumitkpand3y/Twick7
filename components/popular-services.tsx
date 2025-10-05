@@ -8,7 +8,7 @@ import { ServiceType } from '@/types';
 import { useBookingStore } from '@/store/booking-store';
 import { useAuthStore } from '@/store/auth-store';
 import { useServices } from '@/hooks/useServices';
-import { Clock, Star, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { Clock, Star, ArrowRight, Loader as Loader2, CircleAlert as AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 

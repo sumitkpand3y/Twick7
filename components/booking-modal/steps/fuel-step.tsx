@@ -5,7 +5,7 @@ import { useBookingStore } from '@/store/booking-store';
 import { fuelTypes } from '@/lib/data';
 import { FuelType } from '@/types';
 import { motion } from 'framer-motion';
-import { AlertCircle } from 'lucide-react';
+import { CircleAlert as AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FieldError } from '@/utils/form-validation.utils';
 import { cn } from '@/lib/utils';

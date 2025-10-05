@@ -5,7 +5,7 @@ import { useBookingStore } from "@/store/booking-store";
 import { CarModel } from "@/types";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { Search, AlertCircle } from "lucide-react";
+import { Search, CircleAlert as AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FieldError } from "@/utils/form-validation.utils";
 import { cn } from "@/lib/utils";

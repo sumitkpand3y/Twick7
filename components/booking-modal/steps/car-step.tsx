@@ -7,7 +7,7 @@ import { Car } from "@/types";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
-import { Search, AlertCircle, Loader2, RefreshCw } from "lucide-react";
+import { Search, CircleAlert as AlertCircle, Loader as Loader2, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/utils/form-validation.utils";

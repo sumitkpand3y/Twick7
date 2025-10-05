@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useBooking } from '@/hooks/useBooking';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader as Loader2, CircleAlert as AlertCircle } from 'lucide-react';
 
 interface Brand {
   name: string;

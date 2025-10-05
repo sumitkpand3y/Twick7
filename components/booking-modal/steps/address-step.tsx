@@ -4,7 +4,7 @@ import { useBookingStore } from '@/store/booking-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MapPin, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { MapPin, Loader as Loader2, CircleCheck as CheckCircle2, CircleAlert as AlertCircle } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { FieldError } from '@/utils/form-validation.utils';
