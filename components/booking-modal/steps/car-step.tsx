@@ -41,7 +41,7 @@ export function CarStep() {
         const transformedCars: Car[] = uniqueBrands.map((vehicle, index) => ({
           id: vehicle.id || `car-${index}`,
           name: vehicle.brand,
-          image: `/cars/${vehicle.brand.toLowerCase()}.jpg`,
+          image: `/cars/${vehicle.brand.toLowerCase()}.png`,
           models: vehicles
             .filter((v) => v.brand === vehicle.brand)
             .map((v) => ({
@@ -211,14 +211,14 @@ export function CarStep() {
                 }`}
                 onClick={() => handleCarSelect(car)}
               >
-                {/* <Image
+                <Image
                   src={car.image}
                   alt={car.name}
                   className="w-full h-16 object-cover rounded-md mb-4"
                   width={240}
                   height={120}
                  
-                /> */}
+                />
                 <h3 className="font-semibold text-center text-sm">
                   {car.name}
                 </h3>

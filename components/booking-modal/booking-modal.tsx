@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Stepper } from "@/components/ui/stepper";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
@@ -72,6 +72,7 @@ export function BookingModal() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingId, setBookingId] = useState("");
   const [pendingBooking, setPendingBooking] = useState(false);
+  const [validFields, setValidFields] = useState<Set<string>>(new Set());
 
   const handleClose = () => {
     setModalOpen(false);
@@ -79,6 +80,26 @@ export function BookingModal() {
     setValidationErrors([]);
     setPendingBooking(false);
   };
+
+ const handleFieldValidation = useCallback(
+   (field: string, isValid: boolean) => {
+     setValidFields((prev) => {
+       const newSet = new Set(prev);
+       if (isValid) {
+         newSet.add(field);
+
+         // Auto-remove any validation error for this field
+         setValidationErrors((prevErrors) =>
+           prevErrors.filter((error) => error.field !== field)
+         );
+       } else {
+         newSet.delete(field);
+       }
+       return newSet;
+     });
+   },
+   []
+ );
 
   const validateCurrentStep = (): boolean => {
     if (currentStep >= stepValidationKeys.length) return true;
@@ -504,7 +525,10 @@ export function BookingModal() {
                 transition={{ duration: 0.3 }}
                 className="min-h-[400px]"
               >
-                <CurrentStepComponent />
+                <CurrentStepComponent
+                  validationErrors={validationErrors}
+                  onFieldValidation={handleFieldValidation}
+                />
               </motion.div>
             </div>
           </div>
@@ -539,7 +563,11 @@ export function BookingModal() {
                 className="order-1 sm:order-2"
                 disabled={isBookingLoading}
               >
-                {isBookingLoading ? "Processing..." : (currentStep === steps.length - 1 ? "Confirm Booking" : "Next")}
+                {isBookingLoading
+                  ? "Processing..."
+                  : currentStep === steps.length - 1
+                  ? "Confirm Booking"
+                  : "Next"}
                 {currentStep !== steps.length - 1 && !isBookingLoading && (
                   <ArrowRight className="w-4 h-4 ml-2" />
                 )}

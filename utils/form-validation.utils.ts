@@ -1,4 +1,5 @@
-import { ZodError, ZodSchema } from 'zod';
+// utils/form-validation.utils.ts
+import { ZodError, ZodSchema } from "zod";
 
 export interface FieldError {
   field: string;
@@ -20,10 +21,10 @@ export function validateStep(schema: ZodSchema, data: any): ValidationResult {
       data: validatedData,
     };
   } catch (error) {
-    if (error instanceof ZodError) {
-      const fieldErrors: FieldError[] = error.errors.map((err) => ({
-        field: err.path.join('.'),
-        message: err.message,
+    if (error instanceof ZodError && Array.isArray(error.issues)) {
+      const fieldErrors: FieldError[] = error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
       }));
 
       return {
@@ -36,19 +37,48 @@ export function validateStep(schema: ZodSchema, data: any): ValidationResult {
       success: false,
       errors: [
         {
-          field: 'general',
-          message: 'Validation failed',
+          field: "general",
+          message: error instanceof Error ? error.message : "Validation failed",
         },
       ],
     };
   }
 }
 
-export function getFieldError(errors: FieldError[], fieldName: string): string | undefined {
-  const error = errors.find((err) => err.field === fieldName);
-  return error?.message;
+// New function for real-time field validation
+export function validateField(
+  schema: ZodSchema,
+  fieldName: string,
+  value: any
+): string | null {
+  try {
+    // Create a partial validation for just this field
+    const fieldSchema = schema.pick({ [fieldName]: true });
+    fieldSchema.parse({ [fieldName]: value });
+    return null; // No error
+  } catch (error) {
+    if (error instanceof ZodError && Array.isArray(error.issues)) {
+      const fieldError = error.issues.find(
+        (issue) => issue.path[0] === fieldName
+      );
+      return fieldError?.message || null;
+    }
+    return null;
+  }
 }
 
-export function hasFieldError(errors: FieldError[], fieldName: string): boolean {
+export function getFieldError(
+  errors: FieldError[],
+  fieldName: string
+): string | undefined {
+  if (!Array.isArray(errors)) return undefined;
+  return errors.find((err) => err.field === fieldName)?.message;
+}
+
+export function hasFieldError(
+  errors: FieldError[],
+  fieldName: string
+): boolean {
+  if (!Array.isArray(errors)) return false;
   return errors.some((err) => err.field === fieldName);
 }

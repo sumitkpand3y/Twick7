@@ -9,6 +9,7 @@ import {
   FuelType,
   ServiceType,
 } from "@/types";
+import { FieldError } from "react-hook-form";
 
 interface BookingStore {
   bookingData: BookingData;
@@ -21,6 +22,9 @@ interface BookingStore {
   goToNextStep: () => void;
   goToPrevStep: () => void;
   toggleServiceType: (serviceType: ServiceType) => void; // Add this new method
+  validationErrors: FieldError[];
+  setValidationErrors: (errors: FieldError[]) => void;
+  clearValidationErrors: () => void;
 }
 
 const initialBookingData: BookingData = {
@@ -88,4 +92,9 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
     set((state) => ({
       currentStep: Math.max(state.currentStep - 1, 0),
     })),
+
+  validationErrors: [],
+  setValidationErrors: (errors: FieldError[]) =>
+    set({ validationErrors: errors }),
+  clearValidationErrors: () => set({ validationErrors: [] }),
 }));
