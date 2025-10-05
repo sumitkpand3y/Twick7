@@ -234,10 +234,6 @@ export function CarStep({ validationErrors, onFieldValidation }: CarStepProps) {
                       fill
                       className="object-contain rounded-md"
                       sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/cars/default-car.png';
-                      }}
                     />
                   </div>
                   <h3 className="font-semibold text-center text-sm truncate">

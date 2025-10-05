@@ -126,10 +126,7 @@ export function BrandsWeService() {
                   src={brand.logo}
                   alt={brand.name}
                   className="w-16 h-16 mx-auto mb-3 rounded-lg object-contain group-hover:scale-110 transition-transform duration-300"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/cars/default-car.png';
-                  }}
+                  
                 />
                 <h3 className="font-semibold text-sm text-gray-800 group-hover:text-primary transition-colors truncate">
                   {brand.name}
