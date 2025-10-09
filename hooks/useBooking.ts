@@ -29,9 +29,7 @@ export function useBooking() {
         specificIssue: bookingData.specificIssues || "",
         plateNumber: bookingData.plateNumber || "",
         kmReading: bookingData.kmReading.toString() || "",
-        // serviceIds: Array.isArray(bookingData.serviceType)
-        //   ? bookingData.serviceType.map((s: any) => s.id || s)
-        //   : [],
+        serviceIds:bookingData.serviceType.map((s: any) => s.id || s),
         serviceDate: bookingData.serviceDate || "",
         // scheduledTime: bookingData.serviceTime || "10:00",
         flatNo: bookingData.flatHouseNo || "",
