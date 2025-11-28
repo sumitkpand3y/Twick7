@@ -319,30 +319,31 @@ export const reviews: Review[] = [
   },
 ];
 
+// In your lib/data.ts
 export const heroSlides = [
   {
     id: 1,
-    title: "Professional Car Service",
-    subtitle: "Expert care for your vehicle",
-    image:
-      "https://images.pexels.com/photos/279949/pexels-photo-279949.jpeg?auto=compress&cs=tinysrgb&w=1920",
-    cta: "Book Service Now",
+    type: 'image',
+    mediaUrl: 'https://images.pexels.com/photos/279949/pexels-photo-279949.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    title: 'Professional Car Service',
+    subtitle: 'Expert care for your vehicle',
+    cta: 'Book Service Now'
   },
   {
     id: 2,
-    title: "Doorstep Service",
-    subtitle: "Convenient car care at your location",
-    image:
-      "https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=1920",
-    cta: "Book Service Now",
+    type: 'image', 
+    mediaUrl: 'https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    title: 'Doorstep Service',
+    subtitle: 'Convenient car care at your location',
+    cta: 'Book Service Now'
   },
   {
     id: 3,
-    title: "Trusted Mechanics",
-    subtitle: "Skilled professionals you can rely on",
-    image:
-      "https://images.pexels.com/photos/162553/keys-workshop-mechanic-tools-162553.jpeg?auto=compress&cs=tinysrgb&w=1920",
-    cta: "Book Service Now",
+    type: 'image',
+    mediaUrl: 'https://images.pexels.com/photos/162553/keys-workshop-mechanic-tools-162553.jpeg?auto=compress&cs=tinysrgb&w=1920',
+    title: 'Trusted Mechanics',
+    subtitle: 'Skilled professionals you can rely on',
+    cta: 'Book Service Now'
   },
 ];
 

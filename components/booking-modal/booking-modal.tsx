@@ -157,13 +157,16 @@ export function BookingModal() {
   };
 
   const processBooking = async () => {
+
+    console.log("bookingData", bookingData);
+    
     try {
       const result = await createBooking(bookingData);
 
       if (result) {
-        setBookingId(result.bookingNumber || result.id);
-        setShowConfirmation(true);
-        setPendingBooking(false);
+        // setBookingId(re₹sult.bookingNumber || result.id);
+        // setShowConfirmation(true);
+        // setPendingBooking(false);
       }
     } catch (error: any) {
       console.error('Booking creation failed:', error);

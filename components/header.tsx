@@ -101,7 +101,7 @@ export function Header() {
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
-              {user && <NotificationsPanel />}
+              {/* {user && <NotificationsPanel />} */}
 
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -136,7 +136,7 @@ export function Header() {
                     </motion.div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuItem asChild>
+                    {/* <DropdownMenuItem asChild>
                       <Link href="/dashboard" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
                         Dashboard
@@ -153,7 +153,7 @@ export function Header() {
                         <Settings className="mr-2 h-4 w-4" />
                         Profile
                       </Link>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                     <DropdownMenuItem onClick={logout}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Logout
