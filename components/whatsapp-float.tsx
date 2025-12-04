@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export function WhatsAppFloat() {
   const [showTooltip, setShowTooltip] = useState(false);
-  const whatsappNumber = '919876543210'; // Replace with actual number
+  const whatsappNumber = "9900519565"; // Replace with actual number
   const defaultMessage = 'Hi, I need help with my car service booking.';
 
   const handleWhatsAppClick = () => {

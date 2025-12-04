@@ -175,7 +175,6 @@ export const BookingManagement = () => {
   };
 
   const sendNotification = (type: "email" | "whatsapp") => {
-    console.log(`Sending ${type} notification to customer`);
     // Implement actual notification logic here
   };
 
@@ -234,12 +233,10 @@ export const BookingManagement = () => {
   };
 
   const downloadInvoice = () => {
-    console.log("Downloading invoice...");
     // Implement invoice download logic
   };
 
   const printInvoice = () => {
-    console.log("Printing invoice...");
     // Implement invoice print logic
   };
 

@@ -153,12 +153,10 @@ const useParts = () => {
 // Services
 const NotificationService = {
   sendEmail: async (to, subject, content) => {
-    console.log('Sending Email:', { to, subject, content });
     return Promise.resolve({ success: true, messageId: Date.now() });
   },
 
   sendWhatsApp: async (phone, message) => {
-    console.log('Sending WhatsApp:', { phone, message });
     return Promise.resolve({ success: true, messageId: Date.now() });
   },
 
