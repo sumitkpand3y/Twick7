@@ -106,11 +106,10 @@ export function useBooking() {
     model?: string;
     year?: number;
     fuelType?: string;
+    search?: string;
   }) => {
     try {
       const response = await vehicalServices.getVehicleCompatibility(params);
-      console.log("response", response);
-      
       return response.data.vehicles;
     } catch (err: any) {
       console.error("Failed to fetch vehicle compatibility:", err);

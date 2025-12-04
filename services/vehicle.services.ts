@@ -58,12 +58,14 @@ class VehicalServices {
     model?: string;
     year?: number;
     fuelType?: string;
+    search?: string;
   }): Promise<VehicleCompatibility[]> {
     const queryParams = new URLSearchParams();
     if (params.brand) queryParams.append("brand", params.brand);
     if (params.model) queryParams.append("model", params.model);
     if (params.year) queryParams.append("year", params.year.toString());
     if (params.fuelType) queryParams.append("fuelType", params.fuelType);
+    if (params.search) queryParams.append("search", params.search);
 
     return this.request<VehicleCompatibility[]>(
       `/vehicle-compatibility?${queryParams.toString()}`,

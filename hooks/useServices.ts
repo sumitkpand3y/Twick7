@@ -51,8 +51,6 @@ export function useServices(filters?: ServiceFilters) {
       // You'll need to update your servicesService to accept filters
       const response = await servicesService.getAllServices(serviceFilters);
 
-      console.log("API Response:", response);
-
       if (response.success && response.data) {
         setServices(response.data);
 

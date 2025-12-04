@@ -157,9 +157,6 @@ export function BookingModal() {
   };
 
   const processBooking = async () => {
-
-    console.log("bookingData", bookingData);
-    
     try {
       const result = await createBooking(bookingData);
 

@@ -85,24 +85,17 @@ export function AddressStep({ validationErrors, onFieldValidation }: AddressStep
           enableHighAccuracy: true
         });
       });
-
-      console.log("position", position);
-      
       const { latitude, longitude } = position.coords;
 
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
       );
-      console.log("response", response);
-      
 
       if (!response.ok) {
         throw new Error('Failed to fetch address from coordinates');
       }
 
       const data = await response.json();
-      console.log("data", data);
-      
       const address = data.address || {};
 
       setBookingData({

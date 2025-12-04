@@ -55,6 +55,7 @@
     "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",
     "jspdf": "^3.0.1",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.446.0",
     "next": "13.5.1",
     "next-themes": "^0.3.0",
@@ -75,5 +76,8 @@
     "vaul": "^0.9.9",
     "zod": "^4.0.5",
     "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.21"
   }
 }
