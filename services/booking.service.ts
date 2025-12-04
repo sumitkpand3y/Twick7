@@ -91,8 +91,8 @@ class BookingService {
   }
 
   async createBookingFromCustomer(data: CreateBookingFromCustomerRequest): Promise<BookingResponse> {
-    return this.request<BookingResponse>('/create-from-customer', {
-      method: 'POST',
+    return this.request<BookingResponse>("/bookings/create-from-customer", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
