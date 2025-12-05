@@ -62,29 +62,29 @@ class AuthService {
   }
 
   async sendMobileOTP(mobile: string): Promise<OTPResponse> {
-    return this.request<OTPResponse>('/otp/mobile/send', {
-      method: 'POST',
+    return this.request<OTPResponse>("/auth/otp/mobile/send", {
+      method: "POST",
       body: JSON.stringify({ mobile }),
     });
   }
 
   async verifyMobileOTP(mobile: string, otp: string): Promise<VerifyOTPResponse> {
-    return this.request<VerifyOTPResponse>('/otp/mobile/verify', {
-      method: 'POST',
+    return this.request<VerifyOTPResponse>("/auth/otp/mobile/verify", {
+      method: "POST",
       body: JSON.stringify({ mobile, otp }),
     });
   }
 
   async sendEmailOTP(email: string): Promise<OTPResponse> {
-    return this.request<OTPResponse>('/otp/email/send', {
-      method: 'POST',
+    return this.request<OTPResponse>("/auth/otp/email/send", {
+      method: "POST",
       body: JSON.stringify({ email }),
     });
   }
 
   async verifyEmailOTP(email: string, otp: string): Promise<VerifyOTPResponse> {
-    return this.request<VerifyOTPResponse>('/otp/email/verify', {
-      method: 'POST',
+    return this.request<VerifyOTPResponse>("/auth/otp/email/verify", {
+      method: "POST",
       body: JSON.stringify({ email, otp }),
     });
   }
