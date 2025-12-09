@@ -33,7 +33,7 @@ class AuthService {
 
   constructor() {
     this.baseURL =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1/auth";
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/v1";
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
