@@ -43,7 +43,7 @@ const ResponsiveScrollWorkflow = () => {
       bgPattern:
         "radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)",
       description:
-        "Visit www.tweak7.co.in and click 'Schedule Appointment'. Fill out the form with your car make, model, odometer reading, and describe any issues. Submit to request your appointment slot.",
+        "Visit https://tweak7garage.com/ and click 'Schedule Appointment'. Fill out the form with your car make, model, odometer reading, and describe any issues. Submit to request your appointment slot.",
       duration: "2 mins",
       features: [
         "Online booking",

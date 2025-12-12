@@ -1,85 +1,3 @@
-// import { Header } from '@/components/header';
-// import { Footer } from '@/components/footer';
-// import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-
-// export default function FAQ() {
-//   const faqs = [
-//     {
-//       question: 'How do I book a service?',
-//       answer: 'You can book a service by clicking the "Book Service" button on our homepage and following the simple step-by-step process. You\'ll need to select your location, car details, service type, and preferred date.',
-//     },
-//     {
-//       question: 'Do you provide doorstep service?',
-//       answer: 'Yes, we provide doorstep pickup and delivery service in all our service areas. Our technicians will come to your location, pick up your vehicle, service it at our facility, and deliver it back to you.',
-//     },
-//     {
-//       question: 'What is your service warranty?',
-//       answer: 'All our services come with a comprehensive warranty ranging from 3 to 12 months depending on the service type. We also provide warranty on parts and labor.',
-//     },
-//     {
-//       question: 'How much does a basic service cost?',
-//       answer: 'Our basic service starts from ₹2,499 and includes oil change, filter replacement, and basic checks. The exact price may vary based on your car model and requirements.',
-//     },
-//     {
-//       question: 'Can I track my service status?',
-//       answer: 'Yes, you can track your service status in real-time through our dashboard. You\'ll receive SMS and email updates at each stage of the service process.',
-//     },
-//     {
-//       question: 'What if I\'m not satisfied with the service?',
-//       answer: 'Customer satisfaction is our top priority. If you\'re not satisfied with our service, please contact our support team within 24 hours, and we\'ll resolve the issue promptly.',
-//     },
-//     {
-//       question: 'Do you use genuine parts?',
-//       answer: 'Yes, we use only genuine OEM parts and high-quality aftermarket parts from trusted brands. All parts come with manufacturer warranty.',
-//     },
-//     {
-//       question: 'How long does a service take?',
-//       answer: 'Basic service typically takes 2-3 hours, while comprehensive service may take 4-6 hours. We\'ll provide you with an estimated completion time when you book.',
-//     },
-//     {
-//       question: 'Can I reschedule my appointment?',
-//       answer: 'Yes, you can reschedule your appointment up to 2 hours before the scheduled time through our dashboard or by calling our support team.',
-//     },
-//     {
-//       question: 'What payment methods do you accept?',
-//       answer: 'We accept all major payment methods including cash, credit/debit cards, UPI, net banking, and digital wallets.',
-//     },
-//   ];
-
-//   return (
-//     <div className="min-h-screen bg-background">
-//       <Header />
-//       <main className="pt-16">
-//         <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-16">
-//           <div className="container mx-auto px-4 text-center">
-//             <h1 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
-//             <p className="text-xl max-w-2xl mx-auto">
-//               Find answers to common questions about our services
-//             </p>
-//           </div>
-//         </div>
-
-//         <div className="container mx-auto px-4 py-16">
-//           <div className="max-w-3xl mx-auto">
-//             <Accordion type="single" collapsible className="w-full">
-//               {faqs.map((faq, index) => (
-//                 <AccordionItem key={index} value={`item-${index}`}>
-//                   <AccordionTrigger className="text-left">
-//                     {faq.question}
-//                   </AccordionTrigger>
-//                   <AccordionContent>
-//                     {faq.answer}
-//                   </AccordionContent>
-//                 </AccordionItem>
-//               ))}
-//             </Accordion>
-//           </div>
-//         </div>
-//       </main>
-//       <Footer />
-//     </div>
-//   );
-// }
 
 "use client";
 
@@ -123,109 +41,228 @@ export default function FAQ() {
     );
   };
 
-  const faqs = [
+ const faqs = [
     {
-      category: "Booking & Services",
+      category: "GENERAL SERVICE & MECHANICAL WORK",
       questions: [
         {
-          question: "How do I book a service with Tweak7?",
+          question: "What services does Tweak7 offer?",
           answer:
-            "You can book a service in multiple ways: 1) Through our website by clicking 'Book Now' and following the step-by-step process, 2) By calling our customer service at 1800-123-4567, 3) Through our mobile app. The booking process is simple and takes just a few minutes.",
+            "We provide complete car care — periodic service, diagnostics, repairs, AC work, brakes, suspension, electrical, and detailed inspections.",
         },
         {
-          question: "What types of services do you offer?",
+          question: "How do I book a service appointment?",
           answer:
-            "We offer comprehensive automotive services including: Periodic/Regular servicing, AC service and repair, Battery replacement, Tyre and wheel care, Engine diagnostics, Brake service, Oil changes, and many more. All services are performed by certified technicians using genuine parts.",
+            "Visit www.tweak7.co.in, click 'Schedule Appointment', fill your vehicle details, describe your issue, and submit. You'll receive instant confirmation.",
         },
         {
-          question: "Do you provide pickup and drop service?",
+          question: "How do I book a service?",
           answer:
-            "Yes, we provide free pickup and drop service within city limits for all our customers. Our trained drivers will collect your vehicle from your preferred location and return it after service completion. This service is available 6 days a week.",
+            "You can book a service by clicking the 'Book Service' button and following our simple 8-step process. Select your location, car details, service type, and preferred date.",
         },
         {
-          question: "How much advance notice do I need to book a service?",
-          answer:
-            "We recommend booking at least 24-48 hours in advance to ensure your preferred time slot. However, we also accommodate same-day bookings based on availability. For urgent services, please call our helpline.",
-        },
-      ],
-    },
-    {
-      category: "Pricing & Payment",
-      questions: [
-        {
-          question: "How is the service cost calculated?",
-          answer:
-            "Our pricing is transparent and based on: 1) Type of service required, 2) Car make and model, 3) Parts needed (if any), 4) Labor charges. You'll receive a detailed estimate before any work begins, with no hidden charges.",
+          question: "How soon can I get my car serviced?",
+          answer: "Usually within 24–48 hours, depending on slot availability.",
         },
         {
-          question: "What payment methods do you accept?",
+          question: "Is pricing transparent? Any hidden charges?",
           answer:
-            "We accept all major payment methods including: Cash, Credit/Debit cards, UPI payments, Net banking, Digital wallets (Paytm, PhonePe, etc.). Payment can be made online during booking or after service completion.",
-        },
-        {
-          question: "Do you offer any discounts or packages?",
-          answer:
-            "Yes, we regularly offer: Seasonal discounts, First-time customer offers, Loyalty program benefits, Annual maintenance packages, Referral bonuses. Check our website or app for current offers.",
-        },
-      ],
-    },
-    {
-      category: "Service Quality & Warranty",
-      questions: [
-        {
-          question: "What warranty do you provide on services?",
-          answer:
-            "We provide a comprehensive warranty: 1 year warranty on all services, 6 months warranty on parts, 30-day satisfaction guarantee. If you face any issues related to our service within the warranty period, we'll fix it free of charge.",
+            "No hidden charges. We share a clear estimate upfront and take your approval before any additional work.",
         },
         {
           question: "Do you use genuine parts?",
           answer:
-            "Yes, we use only genuine OEM parts or high-quality aftermarket parts from trusted brands. All parts come with manufacturer warranty. We never compromise on quality to ensure your vehicle's optimal performance and safety.",
+            "Yes. Only genuine or OEM-quality parts are used for reliability and safety.",
         },
         {
-          question: "How do you ensure service quality?",
+          question: "Is there a warranty on parts or service?",
+          answer: "Every part installed by Tweak7 carries a 9-month warranty.",
+        },
+        {
+          question: "What is your service warranty?",
           answer:
-            "Our quality assurance includes: Certified and trained technicians, Standardized service procedures, Quality checks at each stage, Customer feedback system, Regular training updates, Modern diagnostic equipment.",
+            "All our services come with comprehensive warranty ranging from 3 to 12 months depending on the service type. Parts also come with manufacturer warranty.",
+        },
+        {
+          question: "What does the 9-month parts warranty cover?",
+          answer:
+            "Covers manufacturing defects or premature failure under normal usage.",
+        },
+        {
+          question: "How do I claim my warranty?",
+          answer:
+            "Contact us with your invoice and bring the vehicle for inspection. If the part is defective, replacement is free.",
+        },
+        {
+          question: "Do I need the invoice for warranty claims?",
+          answer: "Yes — digital or printed invoice is required.",
+        },
+        {
+          question: "Will I receive updates during service?",
+          answer:
+            "Yes — you get regular photos, videos, and explanations at every stage.",
+        },
+        {
+          question: "How can I track my service?",
+          answer:
+            "You can track your service in real-time through your dashboard. We also send WhatsApp updates at every stage of the service process.",
+        },
+        {
+          question: "How long does servicing take?",
+          answer:
+            "Basic service: a few hours. Major repairs: based on parts availability. We provide an ETA during booking.",
+        },
+        {
+          question: "Can I supply my own parts?",
+          answer:
+            "Not recommended. No warranty can be given on customer-supplied parts.",
+        },
+        {
+          question: "Do you push unnecessary repairs?",
+          answer:
+            "No. Every recommendation is supported with photos + videos + explanation.",
+        },
+        {
+          question: "What if a part is not in stock?",
+          answer:
+            "We update you immediately, share options & timelines, and proceed only with approval.",
+        },
+        {
+          question: "What payment modes are accepted?",
+          answer: "UPI, card, net banking, and cash.",
+        },
+        {
+          question: "What payment methods do you accept?",
+          answer:
+            "We accept all major payment methods including cash, credit/debit cards, UPI, net banking, and digital wallets like Paytm, PhonePe, etc.",
+        },
+        {
+          question: "Do you offer pickup & drop?",
+          answer: "Available in select areas based on technician availability.",
+        },
+        {
+          question: "Do you provide doorstep service?",
+          answer:
+            "Yes, we provide free doorstep pickup and delivery service in all our service areas. Our team will collect your vehicle and return it after service.",
+        },
+        {
+          question: "Can I visit the workshop during service?",
+          answer: "Yes — customers are welcome anytime with safety guidelines.",
+        },
+        {
+          question: "Are walk-ins accepted?",
+          answer:
+            "Appointments are prioritised. Walk-ins are accepted based on slot availability.",
+        },
+        {
+          question: "What if I am not satisfied with the service?",
+          answer:
+            "Your satisfaction matters. Contact us — we will resolve the issue promptly and fairly.",
         },
       ],
     },
     {
-      category: "Technical Support",
+      category: "CUSTOMER RIGHTS AT TWEAK7",
       questions: [
         {
-          question: "How can I track my service status?",
+          question: "What can I demand during service?",
           answer:
-            "You can track your service in real-time through: Our website dashboard, Mobile app notifications, SMS updates at each stage, WhatsApp status updates, Customer service helpline. You'll know exactly what's happening with your vehicle.",
+            "✔ Photos & videos of every repair step ✔ Clear video proof of any doubtful repair ✔ Before & After comparisons ✔ Detailed explanation of what was done ✔ Itemised estimate & bill ✔ Clarification or re-check for any concern ✔ Transparency & approval before any additional work",
         },
         {
-          question: "What if I'm not satisfied with the service?",
+          question: "What if the same issue appears again?",
           answer:
-            "Customer satisfaction is our priority. If you're not satisfied: Contact us within 24 hours, We'll investigate the issue immediately, Free re-service if needed, Full refund if issue can't be resolved, Escalation to senior management if required.",
-        },
-        {
-          question: "Do you provide emergency roadside assistance?",
-          answer:
-            "Yes, we offer 24/7 emergency roadside assistance for: Battery jumpstart, Flat tyre assistance, Emergency fuel delivery, Lockout assistance, Towing service. Call our emergency helpline for immediate support.",
+            "Contact us immediately. We inspect and resolve based on the cause and warranty status.",
         },
       ],
     },
     {
-      category: "Account & Profile",
+      category: "BODY REPAIR, PAINTING & RESTORATION",
       questions: [
         {
-          question: "How do I create an account?",
+          question: "Do you offer body repair services?",
           answer:
-            "Creating an account is simple: Click 'Login' on our website, Choose email or mobile login, Enter OTP for verification, Complete your profile. Having an account helps you track bookings, view service history, and get personalized offers.",
+            "Yes — from minor dents to major accident repairs, panel replacements, structural alignment, and rust treatment.",
         },
         {
-          question: "Can I reschedule or cancel my booking?",
+          question: "How is denting work carried out?",
           answer:
-            "Yes, you can reschedule or cancel: Up to 4 hours before scheduled time, Through website, app, or customer service, No cancellation charges, Easy rescheduling options available. We understand plans can change.",
+            "✔ Dent pulling ✔ Panel straightening ✔ Welding (if required) ✔ Putty levelling ✔ Primer + paint prep. All stages include photos & videos.",
         },
         {
-          question: "How do I update my contact information?",
+          question: "What paint system do you use?",
           answer:
-            "You can update your information by: Logging into your account, Going to Profile section, Editing required fields, Saving changes. You can also call customer service for assistance with profile updates.",
+            "High-quality base coat + clear coat paint with professional colour-matching technology.",
+        },
+        {
+          question: "Will the paint match the original?",
+          answer:
+            "Yes — we perform spray-out tests, shade matching, and panel blending to achieve factory-like finish.",
+        },
+        {
+          question: "Do you share before & after photos for body/paint work?",
+          answer:
+            "Yes. You receive: ✔ Damage photos ✔ Repair stage photos ✔ Paint prep photos ✔ After-paint finishing ✔ Sunlight video proof",
+        },
+        {
+          question: "Is there a warranty on paintwork?",
+          answer:
+            "Yes — warranty on peeling, blistering, cracking, and fading (under normal conditions).",
+        },
+        {
+          question: "How long does body/paint work take?",
+          answer:
+            "Minor dent + paint: 1–2 days. Panel repaint: 2–3 days. Accident repair: 3–7 days. Full body paint: 10–20 days.",
+        },
+        {
+          question: "Do you do full car restoration?",
+          answer:
+            "Yes — mechanical, electrical, body, and painting restoration.",
+        },
+        {
+          question: "What does restoration include?",
+          answer:
+            "✔ Engine, suspension, brake overhaul ✔ Full body denting & painting ✔ Electrical rewiring ✔ Interior refurbishment ✔ Trim & light restoration ✔ Final detailing + polishing ✔ Full documentation with photos/videos",
+        },
+      ],
+    },
+    {
+      category: "ELECTRICAL WORKS",
+      questions: [
+        {
+          question: "Do you offer electrical diagnostics?",
+          answer:
+            "Yes — we handle: ✔ Wiring repairs ✔ Sensor issues ✔ ECU diagnostics ✔ Battery/alternator issues ✔ Headlights & door electricals",
+        },
+        {
+          question: "How are electrical problems diagnosed?",
+          answer:
+            "Using: ✔ OBD scanner ✔ Multimeter tests ✔ Circuit tracing ✔ Load testing ✔ Fault demonstration videos",
+        },
+      ],
+    },
+    {
+      category: "DETAILING & CLEANING",
+      questions: [
+        {
+          question: "What detailing services do you provide?",
+          answer:
+            "✔ Exterior foam wash ✔ Machine polishing ✔ Ceramic coating ✔ Interior deep cleaning ✔ Engine bay detailing ✔ Headlight restoration ✔ Water spot & swirl removal",
+        },
+        {
+          question: "Do you offer ceramic coating?",
+          answer:
+            "Yes — 1, 3, and 5-year ceramic coating packages with warranty.",
+        },
+        {
+          question: "How long does detailing take?",
+          answer:
+            "Basic detailing: 3–5 hours. Full interior: 1 day. Polishing + coating: 1–2 days. Premium detailing: 2–3 days.",
+        },
+        {
+          question: "Will I get photos/videos of detailing work?",
+          answer:
+            "Yes — complete before/after and step-by-step videos are shared.",
         },
       ],
     },

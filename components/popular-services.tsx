@@ -54,7 +54,7 @@ export function PopularServices() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
-              Popular Services
+              Recommended Service
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Loading our most popular services...
@@ -74,7 +74,7 @@ export function PopularServices() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
-              Popular Services
+              Recommended Service
             </h2>
           </div>
           <div className="max-w-md mx-auto text-center p-8 bg-white rounded-lg shadow-sm">
@@ -95,11 +95,13 @@ export function PopularServices() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
-              Popular Services
+              Recommended Service
             </h2>
           </div>
           <div className="max-w-md mx-auto text-center p-8 bg-white rounded-lg shadow-sm">
-            <p className="text-gray-600 mb-4">No popular services available at the moment</p>
+            <p className="text-gray-600 mb-4">
+              No popular services available at the moment
+            </p>
             <Link href="/services">
               <Button variant="outline">View All Services</Button>
             </Link>
@@ -118,7 +120,7 @@ export function PopularServices() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-4xl font-bold mb-4 text-gray-800"
           >
-            Popular Services
+            Recommended Service
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -177,8 +179,14 @@ export function PopularServices() {
                       )}
                     </div>
                     {service.originalPrice && (
-                      <Badge variant="secondary" className="bg-green-100 text-green-800">
-                        Save ₹{(service.originalPrice - service.price).toLocaleString()}
+                      <Badge
+                        variant="secondary"
+                        className="bg-green-100 text-green-800"
+                      >
+                        Save ₹
+                        {(
+                          service.originalPrice - service.price
+                        ).toLocaleString()}
                       </Badge>
                     )}
                   </div>
@@ -199,7 +207,7 @@ export function PopularServices() {
 
         <div className="text-center mt-12">
           <Link
-            href={'/services'}
+            href={"/services"}
             className="inline-block bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-semibold transition-colors"
           >
             View All Services

@@ -10,7 +10,7 @@ import {
   Clock,
   Send,
   Wrench,
-  Navigation,
+  AlertCircle,
 } from "lucide-react";
 import {
   Card,
@@ -30,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -53,26 +54,51 @@ const LiveMap = () => {
 };
 
 export default function Contact() {
-  const { submitContact, isLoading, fieldErrors } = useContact();
+  const { submitContact, isLoading, error, fieldErrors, clearErrors } =
+    useContact();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    mobile: "",
+    phone: "",
     subject: "",
     message: "",
+    priority: "MEDIUM" as "LOW" | "MEDIUM" | "HIGH" | "URGENT",
+    category: "OTHER" as
+      | "TECHNICAL"
+      | "BILLING"
+      | "SERVICE"
+      | "COMPLAINT"
+      | "SUGGESTION"
+      | "FEEDBACK"
+      | "OTHER",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await submitContact(formData);
+    clearErrors();
+
+    // Prepare data for contact support API
+    const contactSupportData = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      subject: formData.subject,
+      message: formData.message,
+      priority: formData.priority,
+      category: formData.category,
+    };
+
+    const success = await submitContact(contactSupportData);
 
     if (success) {
       setFormData({
         name: "",
         email: "",
-        mobile: "",
+        phone: "",
         subject: "",
         message: "",
+        priority: "MEDIUM",
+        category: "OTHER",
       });
     }
   };
@@ -237,13 +263,27 @@ export default function Contact() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
-                Send Us a Message
+                Contact Support
               </h2>
               <p className="text-sm sm:text-lg text-gray-600 max-w-3xl mx-auto px-4">
-                Have a question or need a service? Fill out the form below and
-                we'll get back to you as soon as possible.
+                Have a question or need technical support? Fill out the form
+                below and we'll get back to you as soon as possible.
               </p>
             </motion.div>
+
+            {/* Global Error Alert */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6"
+              >
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              </motion.div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
               {/* Contact Form */}
@@ -255,11 +295,11 @@ export default function Contact() {
                 <Card className="shadow-lg border-0">
                   <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-t-lg py-4 sm:py-6">
                     <CardTitle className="text-xl sm:text-2xl">
-                      Contact Form
+                      Support Request
                     </CardTitle>
                     <CardDescription className="text-blue-100 text-sm sm:text-base">
-                      Fill out the form below and we'll get back to you as soon
-                      as possible.
+                      Fill out the form below for technical support, billing
+                      issues, or general inquiries.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-4 sm:pt-6">
@@ -289,31 +329,36 @@ export default function Contact() {
                             placeholder="Enter your full name"
                             className="text-sm sm:text-base"
                           />
+                          {fieldErrors.name && (
+                            <p className="text-xs sm:text-sm text-red-600 mt-1">
+                              {fieldErrors.name}
+                            </p>
+                          )}
                         </div>
                         <div className="space-y-2">
                           <Label
-                            htmlFor="mobile"
+                            htmlFor="phone"
                             className="text-sm sm:text-base"
                           >
                             Phone Number *
                           </Label>
                           <Input
-                            id="mobile"
+                            id="phone"
                             type="tel"
                             required
-                            value={formData.mobile}
+                            value={formData.phone}
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
-                                mobile: e.target.value,
+                                phone: e.target.value,
                               }))
                             }
                             placeholder="Enter your phone number"
                             className="text-sm sm:text-base"
                           />
-                          {fieldErrors.mobile && (
+                          {fieldErrors.phone && (
                             <p className="text-xs sm:text-sm text-red-600 mt-1">
-                              {fieldErrors.mobile}
+                              {fieldErrors.phone}
                             </p>
                           )}
                         </div>
@@ -337,6 +382,11 @@ export default function Contact() {
                           placeholder="Enter your email address"
                           className="text-sm sm:text-base"
                         />
+                        {fieldErrors.email && (
+                          <p className="text-xs sm:text-sm text-red-600 mt-1">
+                            {fieldErrors.email}
+                          </p>
+                        )}
                       </div>
 
                       <div className="space-y-2">
@@ -346,47 +396,86 @@ export default function Contact() {
                         >
                           Subject *
                         </Label>
-                        <Select
-                          onValueChange={(value) =>
-                            setFormData((prev) => ({ ...prev, subject: value }))
+                        <Input
+                          id="subject"
+                          type="text"
+                          required
+                          value={formData.subject}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              subject: e.target.value,
+                            }))
                           }
-                        >
-                          <SelectTrigger className="text-sm sm:text-base">
-                            <SelectValue placeholder="Select a subject" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem
-                              value="general"
-                              className="text-sm sm:text-base"
-                            >
-                              General Inquiry
-                            </SelectItem>
-                            <SelectItem
-                              value="booking"
-                              className="text-sm sm:text-base"
-                            >
-                              Booking Support
-                            </SelectItem>
-                            <SelectItem
-                              value="complaint"
-                              className="text-sm sm:text-base"
-                            >
-                              Complaint
-                            </SelectItem>
-                            <SelectItem
-                              value="feedback"
-                              className="text-sm sm:text-base"
-                            >
-                              Feedback
-                            </SelectItem>
-                            <SelectItem
-                              value="partnership"
-                              className="text-sm sm:text-base"
-                            >
-                              Partnership
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
+                          placeholder="Enter your subject"
+                          className="text-sm sm:text-base"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="priority"
+                            className="text-sm sm:text-base"
+                          >
+                            Priority
+                          </Label>
+                          <Select
+                            value={formData.priority}
+                            onValueChange={(value: any) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                priority: value,
+                              }))
+                            }
+                          >
+                            <SelectTrigger className="text-sm sm:text-base">
+                              <SelectValue placeholder="Select priority" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="LOW">Low</SelectItem>
+                              <SelectItem value="MEDIUM">Medium</SelectItem>
+                              <SelectItem value="HIGH">High</SelectItem>
+                              <SelectItem value="URGENT">Urgent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="category"
+                            className="text-sm sm:text-base"
+                          >
+                            Category
+                          </Label>
+                          <Select
+                            value={formData.category}
+                            onValueChange={(value: any) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                category: value,
+                              }))
+                            }
+                          >
+                            <SelectTrigger className="text-sm sm:text-base">
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="TECHNICAL">
+                                Technical
+                              </SelectItem>
+                              <SelectItem value="BILLING">Billing</SelectItem>
+                              <SelectItem value="SERVICE">Service</SelectItem>
+                              <SelectItem value="COMPLAINT">
+                                Complaint
+                              </SelectItem>
+                              <SelectItem value="SUGGESTION">
+                                Suggestion
+                              </SelectItem>
+                              <SelectItem value="FEEDBACK">Feedback</SelectItem>
+                              <SelectItem value="OTHER">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
 
                       <div className="space-y-2">
@@ -410,6 +499,11 @@ export default function Contact() {
                           placeholder="Tell us how we can help you..."
                           className="text-sm sm:text-base resize-vertical min-h-[100px]"
                         />
+                        {fieldErrors.message && (
+                          <p className="text-xs sm:text-sm text-red-600 mt-1">
+                            {fieldErrors.message}
+                          </p>
+                        )}
                       </div>
 
                       <Button
@@ -430,7 +524,7 @@ export default function Contact() {
                         ) : (
                           <Send className="w-4 h-4 mr-2" />
                         )}
-                        {isLoading ? "Sending..." : "Send Message"}
+                        {isLoading ? "Sending..." : "Send Support Request"}
                       </Button>
                     </form>
                   </CardContent>

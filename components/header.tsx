@@ -62,21 +62,25 @@ export function Header() {
 
   return (
     <>
-      <header className={`bg-white shadow-md fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-lg' : 'shadow-sm'}`}>
+      <header
+        className={`bg-white shadow-md fixed w-full top-0 z-50 transition-all duration-300 ${
+          scrolled ? "shadow-lg" : "shadow-sm"
+        }`}
+      >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center space-x-2">
-              <motion.div
+              {/* <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-              >
+              > */}
                 <Image
-                  src="https://tweak7.co.in/mainwebsit/image/logo/logo.png"
+                  src="../images/tweak7Image.png"
                   alt="Sumit"
-                  width={120}
-                  height={110}
+                  width={90}
+                  height={80}
                 />
-              </motion.div>
+              {/* </motion.div> */}
             </Link>
 
             {/* Desktop Navigation */}
@@ -85,14 +89,20 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative px-1 py-2 text-gray-700 hover:text-primary transition-colors duration-200 font-medium ${isActive(item.href) ? 'text-primary' : ''}`}
+                  className={`relative px-1 py-2 text-gray-700 hover:text-primary transition-colors duration-200 font-medium ${
+                    isActive(item.href) ? "text-primary" : ""
+                  }`}
                 >
                   {item.label}
                   {isActive(item.href) && (
                     <motion.span
                       layoutId="activeIndicator"
                       className="absolute left-0 bottom-0 w-full h-0.5 bg-gray-900 rounded-full"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      transition={{
+                        type: "spring",
+                        bounce: 0.2,
+                        duration: 0.6,
+                      }}
                     />
                   )}
                 </Link>
@@ -195,7 +205,7 @@ export function Header() {
           {isMobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
               className="md:hidden bg-white overflow-hidden"
@@ -205,23 +215,29 @@ export function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-4 py-3 font-medium transition-colors duration-200 flex items-center ${isActive(item.href) ? 'text-primary bg-primary/10' : 'text-gray-700 hover:text-primary'}`}
+                    className={`px-4 py-3 font-medium transition-colors duration-200 flex items-center ${
+                      isActive(item.href)
+                        ? "text-primary bg-primary/10"
+                        : "text-gray-700 hover:text-primary"
+                    }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {isActive(item.href) && (
                       <motion.span
                         layoutId="mobileActiveIndicator"
                         className="w-1 h-6 bg-primary rounded-full mr-3"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        transition={{
+                          type: "spring",
+                          bounce: 0.2,
+                          duration: 0.6,
+                        }}
                       />
                     )}
                     {item.label}
                   </Link>
                 ))}
                 <div className="px-4 space-y-3 pt-2">
-                  <motion.div
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <motion.div whileTap={{ scale: 0.98 }}>
                     <Button
                       variant="outline"
                       onClick={() => {
@@ -234,9 +250,7 @@ export function Header() {
                     </Button>
                   </motion.div>
                   {!user && (
-                    <motion.div
-                      whileTap={{ scale: 0.98 }}
-                    >
+                    <motion.div whileTap={{ scale: 0.98 }}>
                       <Button
                         variant="outline"
                         onClick={() => setAuthModalOpen(true)}
@@ -257,8 +271,8 @@ export function Header() {
         isOpen={isQuickEnquiryOpen}
         onClose={() => setIsQuickEnquiryOpen(false)}
       />
-      <AuthModal/>
-      <BookingModal/>
+      <AuthModal />
+      <BookingModal />
     </>
   );
 }

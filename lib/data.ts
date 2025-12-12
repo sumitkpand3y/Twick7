@@ -1,5 +1,6 @@
 import { State, Car, CarModel, FuelType, ServiceType, Review } from "@/types";
 import { PopularService, Coupon } from "@/types";
+const getImagePath = (fileName) => `../heroImages/${fileName}`;
 
 export const states: State[] = [
   {
@@ -319,33 +320,48 @@ export const reviews: Review[] = [
   },
 ];
 
-// In your lib/data.ts
+console.log(
+  "dfdfd",
+  getImagePath("Where_Technical_Expertise_Meets_Transparent_Service")
+);
+
 export const heroSlides = [
   {
     id: 1,
-    type: 'image',
-    mediaUrl: 'https://images.pexels.com/photos/279949/pexels-photo-279949.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    title: 'Professional Car Service',
-    subtitle: 'Expert care for your vehicle',
-    cta: 'Book Service Now'
+    type: "image",
+    mediaUrl: getImagePath(
+      "Where_Technical_Expertise_Meets_Transparent_Service.jpg"
+    ),
+    title: "Expert Service",
+    subtitle: "Transparent care you can trust",
+    cta: "Book Service Now",
   },
   {
     id: 2,
-    type: 'image', 
-    mediaUrl: 'https://images.pexels.com/photos/1545743/pexels-photo-1545743.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    title: 'Doorstep Service',
-    subtitle: 'Convenient car care at your location',
-    cta: 'Book Service Now'
+    type: "image",
+    mediaUrl: getImagePath("Precision_Diagnostics_Engineered_Repairs.jpg"),
+    title: "Precision Repairs",
+    subtitle: "Advanced diagnostics, perfect results",
+    cta: "Book Service Now",
   },
   {
     id: 3,
-    type: 'image',
-    mediaUrl: 'https://images.pexels.com/photos/162553/keys-workshop-mechanic-tools-162553.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    title: 'Trusted Mechanics',
-    subtitle: 'Skilled professionals you can rely on',
-    cta: 'Book Service Now'
+    type: "image",
+    mediaUrl: getImagePath("We_Listen_First_We_Fix_Next.jpg"),
+    title: "We Listen. We Fix.",
+    subtitle: "Your needs first, solutions next",
+    cta: "Book Service Now",
+  },
+  {
+    id: 4,
+    type: "image",
+    mediaUrl: getImagePath("Drive_with_confidence.jpg"),
+    title: "Drive Confident",
+    subtitle: "Reliable service every time",
+    cta: "Book Service Now",
   },
 ];
+
 
 export const popularServices: PopularService[] = [
   {
@@ -467,34 +483,38 @@ export const carBrands = [
 export const whyChooseUs = [
   {
     icon: "🛡️",
-    title: "Trusted Service",
-    description:
-      "Over 50,000+ satisfied customers trust us with their vehicles",
+    title: "Transparent & Honest Pricing",
+    description: "Clear estimates with no hidden charges or surprise add-ons.",
   },
   {
     icon: "💰",
-    title: "Transparent Pricing",
-    description: "No hidden charges. What you see is what you pay",
+    title: "Expert Technicians",
+    description:
+      "Skilled professionals delivering accurate diagnosis and quality repairs.",
   },
   {
     icon: "🔧",
-    title: "Genuine Spares",
-    description: "We use only genuine OEM parts with manufacturer warranty",
+    title: "Real-Time Updates",
+    description:
+      "Photos, videos, and clear communication at every stage of the service.",
   },
   {
     icon: "🏠",
-    title: "Doorstep Service",
-    description: "Free pickup and drop service at your convenience",
+    title: "Genuine Parts with Warranty",
+    description:
+      "High-quality parts backed by Tweak7’s 9-month warranty for complete peace of mind.",
   },
   {
     icon: "⚡",
-    title: "Quick Service",
-    description: "Fast turnaround time without compromising quality",
+    title: "Advanced Diagnostics & Inspection",
+    description:
+      "Professional tools and in-depth inspection reports to prevent future issues.",
   },
   {
     icon: "📱",
-    title: "Real-time Updates",
-    description: "Track your service status in real-time via WhatsApp",
+    title: "Hassle-Free Appointment System",
+    description:
+      "Scheduled service slots, minimal waiting, and a smooth, organised workflow.",
   },
 ];
 
@@ -521,63 +541,261 @@ export const cities = [
 
 export const faqs = [
   {
-    question: "How do I book a service?",
-    answer:
-      'You can book a service by clicking the "Book Service" button and following our simple 8-step process. Select your location, car details, service type, and preferred date.',
+    category: "GENERAL SERVICE & MECHANICAL WORK",
+    questions: [
+      {
+        question: "What services does Tweak7 offer?",
+        answer:
+          "We provide complete car care — periodic service, diagnostics, repairs, AC work, brakes, suspension, electrical, and detailed inspections.",
+      },
+      {
+        question: "How do I book a service appointment?",
+        answer:
+          "Visit www.tweak7.co.in, click 'Schedule Appointment', fill your vehicle details, describe your issue, and submit. You'll receive instant confirmation.",
+      },
+      {
+        question: "How do I book a service?",
+        answer:
+          "You can book a service by clicking the 'Book Service' button and following our simple 8-step process. Select your location, car details, service type, and preferred date.",
+      },
+      {
+        question: "How soon can I get my car serviced?",
+        answer: "Usually within 24–48 hours, depending on slot availability.",
+      },
+      {
+        question: "Is pricing transparent? Any hidden charges?",
+        answer:
+          "No hidden charges. We share a clear estimate upfront and take your approval before any additional work.",
+      },
+      {
+        question: "Do you use genuine parts?",
+        answer:
+          "Yes. Only genuine or OEM-quality parts are used for reliability and safety.",
+      },
+      {
+        question: "Is there a warranty on parts or service?",
+        answer: "Every part installed by Tweak7 carries a 9-month warranty.",
+      },
+      {
+        question: "What is your service warranty?",
+        answer:
+          "All our services come with comprehensive warranty ranging from 3 to 12 months depending on the service type. Parts also come with manufacturer warranty.",
+      },
+      {
+        question: "What does the 9-month parts warranty cover?",
+        answer:
+          "Covers manufacturing defects or premature failure under normal usage.",
+      },
+      {
+        question: "How do I claim my warranty?",
+        answer:
+          "Contact us with your invoice and bring the vehicle for inspection. If the part is defective, replacement is free.",
+      },
+      {
+        question: "Do I need the invoice for warranty claims?",
+        answer: "Yes — digital or printed invoice is required.",
+      },
+      {
+        question: "Will I receive updates during service?",
+        answer:
+          "Yes — you get regular photos, videos, and explanations at every stage.",
+      },
+      {
+        question: "How can I track my service?",
+        answer:
+          "You can track your service in real-time through your dashboard. We also send WhatsApp updates at every stage of the service process.",
+      },
+      {
+        question: "How long does servicing take?",
+        answer:
+          "Basic service: a few hours. Major repairs: based on parts availability. We provide an ETA during booking.",
+      },
+      {
+        question: "Can I supply my own parts?",
+        answer:
+          "Not recommended. No warranty can be given on customer-supplied parts.",
+      },
+      {
+        question: "Do you push unnecessary repairs?",
+        answer:
+          "No. Every recommendation is supported with photos + videos + explanation.",
+      },
+      {
+        question: "What if a part is not in stock?",
+        answer:
+          "We update you immediately, share options & timelines, and proceed only with approval.",
+      },
+      {
+        question: "What payment modes are accepted?",
+        answer: "UPI, card, net banking, and cash.",
+      },
+      {
+        question: "What payment methods do you accept?",
+        answer:
+          "We accept all major payment methods including cash, credit/debit cards, UPI, net banking, and digital wallets like Paytm, PhonePe, etc.",
+      },
+      {
+        question: "Do you offer pickup & drop?",
+        answer: "Available in select areas based on technician availability.",
+      },
+      {
+        question: "Do you provide doorstep service?",
+        answer:
+          "Yes, we provide free doorstep pickup and delivery service in all our service areas. Our team will collect your vehicle and return it after service.",
+      },
+      {
+        question: "Can I visit the workshop during service?",
+        answer: "Yes — customers are welcome anytime with safety guidelines.",
+      },
+      {
+        question: "Are walk-ins accepted?",
+        answer:
+          "Appointments are prioritised. Walk-ins are accepted based on slot availability.",
+      },
+      {
+        question: "What if I am not satisfied with the service?",
+        answer:
+          "Your satisfaction matters. Contact us — we will resolve the issue promptly and fairly.",
+      },
+    ],
   },
   {
-    question: "Do you provide doorstep service?",
-    answer:
-      "Yes, we provide free doorstep pickup and delivery service in all our service areas. Our team will collect your vehicle and return it after service.",
+    category: "CUSTOMER RIGHTS AT TWEAK7",
+    questions: [
+      {
+        question: "What can I demand during service?",
+        answer:
+          "✔ Photos & videos of every repair step ✔ Clear video proof of any doubtful repair ✔ Before & After comparisons ✔ Detailed explanation of what was done ✔ Itemised estimate & bill ✔ Clarification or re-check for any concern ✔ Transparency & approval before any additional work",
+      },
+      {
+        question: "What if the same issue appears again?",
+        answer:
+          "Contact us immediately. We inspect and resolve based on the cause and warranty status.",
+      },
+    ],
   },
   {
-    question: "What is your service warranty?",
-    answer:
-      "All our services come with comprehensive warranty ranging from 3 to 12 months depending on the service type. Parts also come with manufacturer warranty.",
+    category: "BODY REPAIR, PAINTING & RESTORATION",
+    questions: [
+      {
+        question: "Do you offer body repair services?",
+        answer:
+          "Yes — from minor dents to major accident repairs, panel replacements, structural alignment, and rust treatment.",
+      },
+      {
+        question: "How is denting work carried out?",
+        answer:
+          "✔ Dent pulling ✔ Panel straightening ✔ Welding (if required) ✔ Putty levelling ✔ Primer + paint prep. All stages include photos & videos.",
+      },
+      {
+        question: "What paint system do you use?",
+        answer:
+          "High-quality base coat + clear coat paint with professional colour-matching technology.",
+      },
+      {
+        question: "Will the paint match the original?",
+        answer:
+          "Yes — we perform spray-out tests, shade matching, and panel blending to achieve factory-like finish.",
+      },
+      {
+        question: "Do you share before & after photos for body/paint work?",
+        answer:
+          "Yes. You receive: ✔ Damage photos ✔ Repair stage photos ✔ Paint prep photos ✔ After-paint finishing ✔ Sunlight video proof",
+      },
+      {
+        question: "Is there a warranty on paintwork?",
+        answer:
+          "Yes — warranty on peeling, blistering, cracking, and fading (under normal conditions).",
+      },
+      {
+        question: "How long does body/paint work take?",
+        answer:
+          "Minor dent + paint: 1–2 days. Panel repaint: 2–3 days. Accident repair: 3–7 days. Full body paint: 10–20 days.",
+      },
+      {
+        question: "Do you do full car restoration?",
+        answer: "Yes — mechanical, electrical, body, and painting restoration.",
+      },
+      {
+        question: "What does restoration include?",
+        answer:
+          "✔ Engine, suspension, brake overhaul ✔ Full body denting & painting ✔ Electrical rewiring ✔ Interior refurbishment ✔ Trim & light restoration ✔ Final detailing + polishing ✔ Full documentation with photos/videos",
+      },
+    ],
   },
   {
-    question: "How can I track my service?",
-    answer:
-      "You can track your service in real-time through your dashboard. We also send WhatsApp updates at every stage of the service process.",
+    category: "ELECTRICAL WORKS",
+    questions: [
+      {
+        question: "Do you offer electrical diagnostics?",
+        answer:
+          "Yes — we handle: ✔ Wiring repairs ✔ Sensor issues ✔ ECU diagnostics ✔ Battery/alternator issues ✔ Headlights & door electricals",
+      },
+      {
+        question: "How are electrical problems diagnosed?",
+        answer:
+          "Using: ✔ OBD scanner ✔ Multimeter tests ✔ Circuit tracing ✔ Load testing ✔ Fault demonstration videos",
+      },
+    ],
   },
   {
-    question: "What payment methods do you accept?",
-    answer:
-      "We accept all major payment methods including cash, credit/debit cards, UPI, net banking, and digital wallets like Paytm, PhonePe, etc.",
+    category: "DETAILING & CLEANING",
+    questions: [
+      {
+        question: "What detailing services do you provide?",
+        answer:
+          "✔ Exterior foam wash ✔ Machine polishing ✔ Ceramic coating ✔ Interior deep cleaning ✔ Engine bay detailing ✔ Headlight restoration ✔ Water spot & swirl removal",
+      },
+      {
+        question: "Do you offer ceramic coating?",
+        answer:
+          "Yes — 1, 3, and 5-year ceramic coating packages with warranty.",
+      },
+      {
+        question: "How long does detailing take?",
+        answer:
+          "Basic detailing: 3–5 hours. Full interior: 1 day. Polishing + coating: 1–2 days. Premium detailing: 2–3 days.",
+      },
+      {
+        question: "Will I get photos/videos of detailing work?",
+        answer:
+          "Yes — complete before/after and step-by-step videos are shared.",
+      },
+    ],
   },
 ];
 
 export const statsData = [
   {
     id: 1,
-    title: "Years Of",
-    subtitle: "Experience",
-    value: 3,
+    title: "Years Of Service",
+    subtitle: "Keeping Bangalore vehicles running smoothly since 2020.",
+    value: 5,
     prefix: "",
-    suffix: "+"
+    suffix: "+",
   },
   {
     id: 2,
-    title: "Technician",
-    subtitle: "& Workers",
-    value: 24,
+    title: "Expert Technicians",
+    subtitle: "Trained mechanics for all type of multi-brand cars ",
+    value: 25,
     prefix: "",
-    suffix: "+"
+    suffix: "+",
   },
   {
     id: 3,
-    title: "Satisfied",
-    subtitle: "Customers",
-    value: 1025,
+    title: "Happy Customers",
+    subtitle: "Regulars who rely on us for genuine and transparent service.",
+    value: 5500,
     prefix: "",
-    suffix: "+"
+    suffix: "+",
   },
   {
     id: 4,
-    title: "Vehicle",
-    subtitle: "Repaired",
-    value: 1025,
+    title: "Vehicles Repaired",
+    subtitle: "From minor fixes to full overhauls, done right the first time.",
+    value: 4200,
     prefix: "",
-    suffix: "+"
-  }
+    suffix: "+",
+  },
 ];

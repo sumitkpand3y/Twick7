@@ -33,7 +33,7 @@ export function BrandsWeService() {
         const uniqueBrands = Array.from(
           new Map(vehicles.map((vehicle) => [vehicle.brand, vehicle])).values()
         )
-          .slice(0, 12)
+          .slice(0, 18)
           .map((vehicle) => ({
             name: vehicle.brand,
             logo: `/cars/${vehicle.brand.toLowerCase().replace(/\s+/g, '-')}.png`,

@@ -29,7 +29,7 @@ export default function Home() {
         {/* <FeaturedServices /> */}
         <HowWeWorkTree/>
         <WhyChooseUs />
-        <CouponsOffers />
+        {/* <CouponsOffers /> */}
         <Testimonials />
         {/* <CityAvailability /> */}
         <FAQSection />
