@@ -64,8 +64,6 @@ export function CarStep({ validationErrors, onFieldValidation }: CarStepProps) {
           search: searchQuery || undefined,
         });
 
-        console.log("sdsdsds")
-
         if (!vehicles || vehicles.length === 0) {
           const errorMessage = searchQuery
             ? `No vehicles found for "${searchQuery}". Please try a different search term.`

@@ -187,9 +187,11 @@ export default function About() {
                 About Tweak<span className="text-blue-600">7</span>
               </h1>
               <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4">
-                We&apos;re revolutionizing car servicing with professional,
-                transparent, and convenient automotive care solutions across
-                India.
+                Tweak7 is transforming the way India experiences car servicing —
+                with transparency, professionalism, and customer-first service
+                at the heart of everything we do. Since 2018, we’ve focused on
+                one promise: honest, reliable, and hassle-free car care that
+                customers can truly trust.
               </p>
             </motion.div>
           </div>

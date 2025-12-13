@@ -320,10 +320,6 @@ export const reviews: Review[] = [
   },
 ];
 
-console.log(
-  "dfdfd",
-  getImagePath("Where_Technical_Expertise_Meets_Transparent_Service")
-);
 
 export const heroSlides = [
   {
@@ -548,7 +544,7 @@ export const faqs = [
   {
     question: "How do I book a service appointment?",
     answer:
-      "Visit www.tweak7.co.in, click 'Schedule Appointment', fill your vehicle details, describe your issue, and submit. You'll receive instant confirmation.",
+      "Visit https://tweak7garage.com/, click 'Schedule Appointment', fill your vehicle details, describe your issue, and submit. You'll receive instant confirmation.",
   },
   {
     question: "How do I book a service?",

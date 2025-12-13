@@ -437,7 +437,7 @@ const ResponsiveScrollWorkflow = () => {
 
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Hero Section - Responsive */}
-        <div className="min-h-screen flex flex-col justify-center items-center text-center px-4 md:px-8">
+        <div className="min-h-[32rem] flex flex-col justify-center items-center text-center px-4 md:px-8">
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 md:px-6 py-2 md:py-3 mb-4 md:mb-6">
               <Star className="w-4 md:w-5 h-4 md:h-5 text-yellow-400" />
@@ -497,7 +497,7 @@ const ResponsiveScrollWorkflow = () => {
                 key={step.id}
                 ref={setStepRef(index)}
                 className={`relative ${
-                  isMobile ? "min-h-screen" : "min-h-screen"
+                  isMobile ? "min-h-[36rem]" : "min-h-[36rem]"
                 } flex items-center py-10 md:py-20`}
               >
                 {/* Step Node - Responsive */}
@@ -641,7 +641,7 @@ const ResponsiveScrollWorkflow = () => {
         </div>
 
         {/* Final CTA Section - Responsive */}
-        <div className="min-h-screen flex items-center justify-center px-4 md:px-8">
+        <div className="min-h-[30rem] flex items-center justify-center px-4 md:px-8">
           <div className="text-center">
             <div className="mb-6 md:mb-8">
               <Zap className="w-12 md:w-16 h-12 md:h-16 text-yellow-400 mx-auto mb-4 md:mb-6" />
